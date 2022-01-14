@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "Seasons",
+  "version": "${version}",
+  "name": "Seasons",
+  "description": "Add seasons to minecraft",
+  "authors": [
+    "bscal"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/Seasons/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "me.bscal.seasons.client.SeasonsClient"
+    ],
+    "main": [
+      "me.bscal.seasons.Seasons"
+    ]
+  },
+  "mixins": [
+    "Seasons.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.12",
+    "fabric": "*",
+    "minecraft": "1.18.1"
+  }
+}

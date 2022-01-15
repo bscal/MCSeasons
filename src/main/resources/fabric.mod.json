@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "Seasons",
+  "id": "seasons",
   "version": "${version}",
   "name": "Seasons",
   "description": "Add seasons to minecraft",

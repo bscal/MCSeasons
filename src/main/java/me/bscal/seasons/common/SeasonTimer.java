@@ -4,13 +4,13 @@ import io.netty.buffer.Unpooled;
 import me.bscal.seasons.Seasons;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -29,13 +29,13 @@ public final class SeasonTimer extends PersistentState
 	private long m_LastTick;
 	private final PacketByteBuf m_CachedBuffer;
 
-	SeasonTimer(World world)
+	SeasonTimer()
 	{
-		if (!world.isClient())
+		var world = Seasons.Instance.getOverWorld();
+		if (world.isPresent() && !world.get().isClient)
 		{
 			m_CachedBuffer = new PacketByteBuf(Unpooled.buffer(SIZE_OF));
-			ServerWorld serverWorld = (ServerWorld) world;
-			Instance = serverWorld.getPersistentStateManager().get((nbt) -> {
+			Instance = world.get().getPersistentStateManager().get((nbt) -> {
 				this.m_TotalTicks = nbt.getLong("TotalTicks");
 				this.m_CurrentTicks = nbt.getLong("CurrentTicks");
 				this.m_Day = nbt.getInt("Day");
@@ -52,10 +52,10 @@ public final class SeasonTimer extends PersistentState
 		}
 	}
 
-	public static SeasonTimer GetOrCreate(World world)
+	public static SeasonTimer GetOrCreate()
 	{
 		if (Instance == null)
-			Instance = new SeasonTimer(world);
+			Instance = new SeasonTimer();
 		return Instance;
 	}
 
@@ -101,16 +101,15 @@ public final class SeasonTimer extends PersistentState
 		return SeasonSettings.getSeasonType(biomeId).getSeason(m_SeasonTrackerId);
 	}
 
-	public SeasonState getSeason(final World world, final Biome biome)
+	public void setSeason(int seasonTrackerId)
 	{
-		var biomeKey = world.getRegistryManager().get(Registry.BIOME_KEY).getKey(biome);
-		return biomeKey.isPresent() ? getSeason(biomeKey.get().getValue()) : getGenericSeason();
+		m_SeasonTrackerId = Math.max(0, Math.min(SeasonSettings.MaxSeasons - 1, seasonTrackerId));
 	}
 
 	// TODO maybe move this out?
 	public void sendToClients()
 	{
-		if (IsClient())
+		if (isClient())
 			return;
 		m_LastTick = m_TotalTicks;
 		m_CachedBuffer.clear();
@@ -135,10 +134,19 @@ public final class SeasonTimer extends PersistentState
 		m_SeasonTrackerId = seasonalSectionTracker;
 	}
 
+	public void setTimeOfDay(long timeOfDay)
+	{
+		// checks if minecraft timeOfDay has ticked over to a new day
+		long diff = timeOfDay - (timeOfDay < m_CurrentTicks ? m_CurrentTicks - SeasonSettings.TicksPerDay : m_CurrentTicks);
+		addTicks(diff);
+	}
+
 	public void addTicks(long ticks)
 	{
-		if (IsClient())
+		if (isClient())
 			return;
+		if (SeasonSettings.DebugMode)
+			logDebug(ticks);
 		m_TotalTicks += ticks;
 		m_CurrentTicks += ticks;
 		if (m_CurrentTicks >= SeasonSettings.TicksPerDay)
@@ -150,11 +158,12 @@ public final class SeasonTimer extends PersistentState
 			m_CurrentTicks = 0;
 		if (m_TotalTicks - m_LastTick > 20)
 			sendToClients();
+		markDirty();
 	}
 
 	private void nextDay()
 	{
-		if (IsClient())
+		if (isClient())
 			return;
 		if (m_Day++ >= SeasonSettings.DaysPerMonth)
 		{
@@ -171,7 +180,7 @@ public final class SeasonTimer extends PersistentState
 
 	private void tryNextSeason()
 	{
-		if (IsClient())
+		if (isClient())
 			return;
 		int newSeason = Math.max(0, Math.min(SeasonSettings.MaxSeasons - 1, m_Month / SeasonSettings.MonthsPerSeason));
 		if (newSeason != m_SeasonTrackerId)
@@ -181,13 +190,18 @@ public final class SeasonTimer extends PersistentState
 		}
 	}
 
-	private boolean IsClient()
+	private void logDebug(long addedTick)
 	{
-		return MinecraftClient.getInstance() != null && MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().world.isClient;
+		Seasons.LOGGER.info(String.format("""
+				Adding tick: %d\s
+				-> TotalTicks %d | CurrentTick %d | SeasonId %d\s
+				-> D/M/Y %d/%d/%d
+				""", addedTick, m_TotalTicks, m_LastTick, m_SeasonTrackerId, m_Day, m_Month, m_Year));
 	}
 
-}
+	private boolean isClient()
+	{
+		return Seasons.Instance.getServer().getOverworld().isClient;
+	}
 
-record SeasonDate(int Day, int Month, int Year)
-{
 }

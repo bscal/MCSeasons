@@ -18,7 +18,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 			int month = buf.readShort();
 			int year = buf.readInt();
 			int seasonalSectionTracker = buf.readByte();
-			client.execute(() -> SeasonTimer.GetOrCreate(client.world).readFromServer(totalTicks, currentTicks, day, month, year, seasonalSectionTracker));
+			client.execute(() -> SeasonTimer.GetOrCreate().readFromServer(totalTicks, currentTicks, day, month, year, seasonalSectionTracker));
 		});
 	}
 }

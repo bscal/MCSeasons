@@ -10,7 +10,9 @@ import net.minecraft.world.biome.BiomeKeys;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.io.File;
 import java.util.HashMap;
@@ -18,28 +20,30 @@ import java.util.Map;
 
 public class SeasonSettings
 {
-	private static YamlConfigurationLoader Loader;
+	public boolean DebugMode;
+	public Config Config;
+	public final Map<Identifier, SeasonTypes> BiomeToSeasonType;
+	private final ConfigurationOptions m_Options;
 
-	public static boolean DebugMode;
-	public static int TicksPerDay;
-	public static int DaysPerMonth;
-	public static int MonthsPerYear;
-	public static int MonthsPerSeason;
-	public static int MaxSeasons;
+	public SeasonSettings(String filename)
+	{
+		DebugMode = FabricLoader.getInstance().isDevelopmentEnvironment();
 
-	public static Map<Identifier, SeasonTypes> BiomeToSeasonType;
+		BiomeToSeasonType = new HashMap<>();
 
-	public static SeasonTypes getSeasonType(Identifier biomeId)
+		m_Options = ConfigurationOptions.defaults()
+				.serializers(builder -> builder.register(Identifier.class, IdentifierSerializer.Instance))
+				.shouldCopyDefaults(true);
+
+		load(filename);
+	}
+
+	public SeasonTypes getSeasonType(Identifier biomeId)
 	{
 		return BiomeToSeasonType.getOrDefault(biomeId, SeasonTypes.FourSeasonPerYear);
 	}
 
-	public static SeasonTypes getSeasonType(RegistryKey<Biome> biomeKey)
-	{
-		return getSeasonType(biomeKey.getValue());
-	}
-
-	public static Map<Identifier, SeasonTypes> biomeToSeasonsSupplier()
+	public Map<Identifier, SeasonTypes> biomeToSeasonsSupplier()
 	{
 		Map<Identifier, SeasonTypes> biomeToSeasonType = new HashMap<>();
 		biomeToSeasonType.put(BiomeKeys.BAMBOO_JUNGLE.getValue(), SeasonTypes.TropicalSeason);
@@ -47,34 +51,30 @@ public class SeasonSettings
 		return biomeToSeasonType;
 	}
 
-	public static void load()
+	public void register(Identifier id, SeasonTypes type, boolean replace)
 	{
-		if (Loader == null)
-			init();
+		if (replace)
+			BiomeToSeasonType.replace(id, type);
+		else
+			BiomeToSeasonType.putIfAbsent(id, type);
+	}
 
+	public void load(String filename)
+	{
+		File configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), filename);
+		var loader = HoconConfigurationLoader.builder().defaultOptions(m_Options).file(configFile).build();
 		CommentedConfigurationNode root;
 		try
 		{
-			root = Loader.load();
-			DebugMode = root.node("DebugMode").getBoolean(true);
-			TicksPerDay = root.node("TicksPerDay").getInt(24000);
-			DaysPerMonth = root.node("DaysPerMonth").getInt(30);
-			MonthsPerYear = root.node("MonthsPerYear").getInt(12);
-			MonthsPerSeason = root.node("MonthsPerSeason").getInt(4);
-			MaxSeasons = root.node("MaxSeasons").getInt(3);
+			root = loader.load();
 
-			var type = new TypeToken<Map<Identifier, SeasonTypes>>()
+			Config = root.get(Config.class);
+			if (Config != null && Config.BiomeToSeasonTypeOverrides != null)
 			{
-			};
-			var mapNode = root.node("BiomeSeasonTypes");
-			if (mapNode.empty())
-			{
-				BiomeToSeasonType = biomeToSeasonsSupplier();
-				root.node("BiomeSeasonTypes").set(type, BiomeToSeasonType);
+				BiomeToSeasonType.putAll(Config.BiomeToSeasonTypeOverrides);
 			}
-			else
-				BiomeToSeasonType = root.node("BiomeSeasonTypes").get(type);
-			Loader.save(root);
+
+			loader.save(root);
 		}
 		catch (ConfigurateException e)
 		{
@@ -86,15 +86,47 @@ public class SeasonSettings
 		}
 	}
 
-	private static void init()
+	public void save(String filename)
 	{
-		File configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), "seasons.yml");
+		File configFile = new File(FabricLoader.getInstance().getConfigDir().toFile(), filename);
+		var loader = HoconConfigurationLoader.builder().defaultOptions(m_Options).file(configFile).build();
+		CommentedConfigurationNode root;
+		try
+		{
+			root = loader.load();
 
-		var configurationOptions = ConfigurationOptions.defaults()
-				.serializers(builder -> builder.register(Identifier.class, IdentifierSerializer.Instance))
-				.shouldCopyDefaults(true);
+			Config = root.get(Config.class);
+			if (Config != null && Config.BiomeToSeasonTypeOverrides != null)
+			{
+				BiomeToSeasonType.putAll(Config.BiomeToSeasonTypeOverrides);
+			}
 
-		Loader = YamlConfigurationLoader.builder().defaultOptions(configurationOptions).file(configFile).build();
-		load();
+			loader.save(root);
+		}
+		catch (ConfigurateException e)
+		{
+			if (e.getCause() != null)
+			{
+				e.getCause().printStackTrace();
+			}
+			System.exit(1);
+		}
 	}
+}
+
+@ConfigSerializable
+class Config
+{
+	@Setting("TicksPerDay")
+	public int TicksPerDay = 24000;
+	@Setting("DaysPerMonth")
+	public int DaysPerMonth = 30;
+	@Setting("MonthsPerYear")
+	public int MonthsPerYear = 12;
+	@Setting("MonthsPerSeason")
+	public int MonthsPerSeason = 3;
+	@Setting("MaxSeasons")
+	public int MaxSeasons = 4;
+	@Setting("BiomeToSeasonTypeOverrides")
+	public Map<Identifier, SeasonTypes> BiomeToSeasonTypeOverrides;
 }

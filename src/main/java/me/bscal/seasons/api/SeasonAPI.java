@@ -49,6 +49,8 @@ public final class SeasonAPI
 		return SeasonTimer.GetOrCreate().getTotalTicks();
 	}
 
+	public static void addDays(int days) { SeasonTimer.GetOrCreate().addDays(days); }
+
 	public static void addTicks(long ticks)
 	{
 		SeasonTimer.GetOrCreate().addTicks(ticks);

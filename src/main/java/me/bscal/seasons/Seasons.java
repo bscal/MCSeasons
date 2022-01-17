@@ -20,6 +20,9 @@ public class Seasons implements ModInitializer
 	public static final String MOD_ID = "seasons";
 	public static final String MOD_NAME = "Seasons";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+
+	public static final String SETTINGS_FILE = "seasons.conf";
+	private static SeasonSettings Settings;
 	private MinecraftServer Server;
 
 	@Override
@@ -27,12 +30,22 @@ public class Seasons implements ModInitializer
 	{
 		Instance = this;
 
-		SeasonSettings.load();
+		Settings = new SeasonSettings(SETTINGS_FILE);
 
 		ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
 			Server = server;
+			Settings.load(SETTINGS_FILE);
 			SeasonTimer.GetOrCreate();
 		});
+
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			Settings.save(SETTINGS_FILE);
+		});
+	}
+
+	public static SeasonSettings getSettings()
+	{
+		return Settings;
 	}
 
 	public MinecraftServer getServer()

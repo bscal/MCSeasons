@@ -93,12 +93,12 @@ public final class SeasonTimer extends PersistentState
 
 	public SeasonState getSeason(Identifier biomeId)
 	{
-		return SeasonSettings.getSeasonType(biomeId).getSeason(m_SeasonTrackerId);
+		return Seasons.getSettings().getSeasonType(biomeId).getSeason(m_SeasonTrackerId);
 	}
 
 	public void setSeason(int seasonTrackerId)
 	{
-		m_SeasonTrackerId = Math.max(0, Math.min(SeasonSettings.MaxSeasons - 1, seasonTrackerId));
+		m_SeasonTrackerId = Math.max(0, Math.min(Seasons.getSettings().Config.MaxSeasons - 1, seasonTrackerId));
 	}
 
 	// TODO maybe move this out?
@@ -132,21 +132,34 @@ public final class SeasonTimer extends PersistentState
 	public void setTimeOfDay(long timeOfDay)
 	{
 		// checks if minecraft timeOfDay has ticked over to a new day
-		long diff = timeOfDay - (timeOfDay < m_CurrentTicks ? m_CurrentTicks - SeasonSettings.TicksPerDay : m_CurrentTicks);
+		long diff = timeOfDay - (timeOfDay < m_CurrentTicks ? m_CurrentTicks - Seasons.getSettings().Config.TicksPerDay : m_CurrentTicks);
 		addTicks(diff);
+	}
+
+	public void addDays(int days)
+	{
+		if (isClient())
+			return;
+		m_TotalTicks += (long)days * Seasons.getSettings().Config.TicksPerDay;
+		m_Day += days;
+		int addedMonths = days / Seasons.getSettings().Config.DaysPerMonth;
+		m_Month += addedMonths;
+		m_Year += addedMonths / Seasons.getSettings().Config.MonthsPerYear;
+		tryNextSeason();
+		sendToClients();
 	}
 
 	public void addTicks(long ticks)
 	{
 		if (isClient())
 			return;
-		if (SeasonSettings.DebugMode)
+		if (Seasons.getSettings().DebugMode)
 			logDebug(ticks);
 		m_TotalTicks += ticks;
 		m_CurrentTicks += ticks;
-		if (m_CurrentTicks >= SeasonSettings.TicksPerDay)
+		if (m_CurrentTicks >= Seasons.getSettings().Config.TicksPerDay)
 		{
-			m_CurrentTicks -= SeasonSettings.TicksPerDay;
+			m_CurrentTicks -= Seasons.getSettings().Config.TicksPerDay;
 			nextDay();
 		}
 		if (m_CurrentTicks < 0)
@@ -160,10 +173,10 @@ public final class SeasonTimer extends PersistentState
 	{
 		if (isClient())
 			return;
-		if (m_Day++ >= SeasonSettings.DaysPerMonth)
+		if (m_Day++ >= Seasons.getSettings().Config.DaysPerMonth)
 		{
 			m_Day = 0;
-			if (m_Month++ >= SeasonSettings.MonthsPerYear)
+			if (m_Month++ >= Seasons.getSettings().Config.MonthsPerYear)
 			{
 				m_Month = 0;
 				m_Year++;
@@ -177,10 +190,10 @@ public final class SeasonTimer extends PersistentState
 	{
 		if (isClient())
 			return;
-		int newSeason = Math.max(0, Math.min(SeasonSettings.MaxSeasons - 1, m_Month / SeasonSettings.MonthsPerSeason));
-		if (newSeason != m_SeasonTrackerId)
+		int newSeasonId = Math.max(0, Math.min(Seasons.getSettings().Config.MaxSeasons - 1, m_Month / Seasons.getSettings().Config.MonthsPerSeason));
+		if (newSeasonId != m_SeasonTrackerId)
 		{
-			m_SeasonTrackerId = newSeason;
+			m_SeasonTrackerId = newSeasonId;
 			// TODO possible event or handle a new season.
 		}
 	}

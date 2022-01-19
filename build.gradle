@@ -24,6 +24,8 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
+    modImplementation(include("com.oroarmor:oro-config-fabric:${project.oro_config_version}"))
+
     modImplementation(include("org.spongepowered:configurate-hocon:4.0.0"))
 }
 

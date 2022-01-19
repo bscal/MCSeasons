@@ -4,7 +4,7 @@
   "package": "me.bscal.seasons.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ServerWorldMixin"
+    "common.ServerWorldMixin"
   ],
   "client": [
   ],

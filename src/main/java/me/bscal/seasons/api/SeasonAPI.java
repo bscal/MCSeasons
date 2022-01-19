@@ -1,8 +1,8 @@
 package me.bscal.seasons.api;
 
-import me.bscal.seasons.common.SeasonDate;
-import me.bscal.seasons.common.SeasonState;
-import me.bscal.seasons.common.SeasonTimer;
+import me.bscal.seasons.common.seasons.SeasonDate;
+import me.bscal.seasons.common.seasons.SeasonState;
+import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;

@@ -1,4 +1,4 @@
-package me.bscal.seasons.common;
+package me.bscal.seasons.common.seasons;
 
 import me.bscal.seasons.common.utils.IdentifierSerializer;
 import net.fabricmc.loader.api.FabricLoader;

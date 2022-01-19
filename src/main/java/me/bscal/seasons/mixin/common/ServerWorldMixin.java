@@ -1,4 +1,4 @@
-package me.bscal.seasons.mixin;
+package me.bscal.seasons.mixin.common;
 
 import me.bscal.seasons.Seasons;
 import me.bscal.seasons.common.seasons.SeasonTimer;

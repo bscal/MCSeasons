@@ -1,4 +1,4 @@
-package me.bscal.seasons.common;
+package me.bscal.seasons.common.seasons;
 
 import io.netty.buffer.Unpooled;
 import me.bscal.seasons.Seasons;

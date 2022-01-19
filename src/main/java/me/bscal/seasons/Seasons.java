@@ -1,13 +1,12 @@
 package me.bscal.seasons;
 
-import me.bscal.seasons.common.SeasonSettings;
-import me.bscal.seasons.common.SeasonTimer;
+import me.bscal.seasons.common.seasons.SeasonSettings;
+import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,7 +54,8 @@ public class Seasons implements ModInitializer
 
 	public Optional<ServerWorld> getOverWorld()
 	{
-		if (Server == null) return Optional.empty();
+		if (Server == null)
+			return Optional.empty();
 		return Optional.of(Server.getOverworld());
 	}
 }

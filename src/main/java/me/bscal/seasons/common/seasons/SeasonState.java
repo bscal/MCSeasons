@@ -1,4 +1,4 @@
-package me.bscal.seasons.common;
+package me.bscal.seasons.common.seasons;
 
 public enum SeasonState
 {

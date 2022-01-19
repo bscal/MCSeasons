@@ -10,7 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
 
-public final class SeasonTimer extends PersistentState
+public class SeasonTimer extends PersistentState
 {
 	private static SeasonTimer Instance = null;
 
@@ -21,6 +21,7 @@ public final class SeasonTimer extends PersistentState
 	private long m_TotalTicks, m_CurrentTicks;
 	private int m_Day, m_Month, m_Year;
 	private int m_SeasonTrackerId;
+	private int m_DaysInCurrentSeason;
 	private long m_LastTick;
 	private final PacketByteBuf m_CachedBuffer;
 
@@ -37,6 +38,7 @@ public final class SeasonTimer extends PersistentState
 				this.m_Month = nbt.getInt("Month");
 				this.m_Year = nbt.getInt("Year");
 				this.m_SeasonTrackerId = nbt.getInt("SeasonTrackerId");
+				this.m_DaysInCurrentSeason = nbt.getInt("DaysInCurrentSeason");
 				return this;
 			}, STATE_NAME);
 		}
@@ -63,6 +65,7 @@ public final class SeasonTimer extends PersistentState
 		nbt.putInt("Month", m_Month);
 		nbt.putInt("Year", m_Year);
 		nbt.putInt("SeasonTrackerId", m_SeasonTrackerId);
+		nbt.putInt("DaysInCurrentSeason", m_DaysInCurrentSeason);
 		return nbt;
 	}
 
@@ -114,18 +117,21 @@ public final class SeasonTimer extends PersistentState
 		m_CachedBuffer.writeShort(m_Day);
 		m_CachedBuffer.writeShort(m_Month);
 		m_CachedBuffer.writeInt(m_Year);
+		m_CachedBuffer.writeShort(m_DaysInCurrentSeason);
 		m_CachedBuffer.writeByte(m_SeasonTrackerId);
 		for (ServerPlayerEntity player : PlayerLookup.all(Seasons.Instance.getServer()))
 			ServerPlayNetworking.send(player, CHANNEL_NAME, m_CachedBuffer);
 	}
 
-	public void readFromServer(long totalTicks, long currentTicks, int day, int month, int year, int seasonalSectionTracker)
+	// TODO this should probably be handled better ._.
+	public void readFromServer(long totalTicks, long currentTicks, int day, int month, int year, int daysInCurrentSeason, int seasonalSectionTracker)
 	{
 		m_TotalTicks = totalTicks;
 		m_CurrentTicks = currentTicks;
 		m_Day = day;
 		m_Month = month;
 		m_Year = year;
+		m_DaysInCurrentSeason = daysInCurrentSeason;
 		m_SeasonTrackerId = seasonalSectionTracker;
 	}
 
@@ -190,11 +196,15 @@ public final class SeasonTimer extends PersistentState
 	{
 		if (isClient())
 			return;
-		int newSeasonId = Math.max(0, Math.min(Seasons.getSettings().Config.MaxSeasons - 1, m_Month / Seasons.getSettings().Config.MonthsPerSeason));
-		if (newSeasonId != m_SeasonTrackerId)
+
+		if (m_DaysInCurrentSeason >= Seasons.getSettings().Config.DaysPerSeason)
 		{
+			int newSeasonId = m_SeasonTrackerId + 1;
+			if (newSeasonId >= Seasons.getSettings().Config.MaxSeasons)
+				newSeasonId = 0;
+
 			m_SeasonTrackerId = newSeasonId;
-			// TODO possible event or handle a new season.
+			m_DaysInCurrentSeason = 0;
 		}
 	}
 

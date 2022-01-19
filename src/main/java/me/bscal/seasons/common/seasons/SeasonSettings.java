@@ -1,17 +1,15 @@
 package me.bscal.seasons.common;
 
-import io.leangen.geantyref.TypeToken;
 import me.bscal.seasons.common.utils.IdentifierSerializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.io.File;
@@ -94,13 +92,7 @@ public class SeasonSettings
 		try
 		{
 			root = loader.load();
-
-			Config = root.get(Config.class);
-			if (Config != null && Config.BiomeToSeasonTypeOverrides != null)
-			{
-				BiomeToSeasonType.putAll(Config.BiomeToSeasonTypeOverrides);
-			}
-
+			root.set(Config.class, Config);
 			loader.save(root);
 		}
 		catch (ConfigurateException e)
@@ -114,19 +106,12 @@ public class SeasonSettings
 	}
 }
 
-@ConfigSerializable
-class Config
+@ConfigSerializable class Config
 {
-	@Setting("TicksPerDay")
-	public int TicksPerDay = 24000;
-	@Setting("DaysPerMonth")
-	public int DaysPerMonth = 30;
-	@Setting("MonthsPerYear")
-	public int MonthsPerYear = 12;
-	@Setting("MonthsPerSeason")
-	public int MonthsPerSeason = 3;
-	@Setting("MaxSeasons")
-	public int MaxSeasons = 4;
-	@Setting("BiomeToSeasonTypeOverrides")
-	public Map<Identifier, SeasonTypes> BiomeToSeasonTypeOverrides;
+	@Setting("TicksPerDay") public int TicksPerDay = 24000;
+	@Setting("DaysPerMonth") @Comment("Minecraft day is 20 minutes. Default is 7 (2.3 irl hours)") public int DaysPerMonth = 7;
+	@Setting("MonthsPerYear") public int MonthsPerYear = 12;
+	@Setting("DaysPerSeason") @Comment("Around 7 irl hours per season") public int DaysPerSeason = 7 * 4;
+	@Setting("MaxSeasons") public int MaxSeasons = 4;
+	@Setting("BiomeToSeasonTypeOverrides") public Map<Identifier, SeasonTypes> BiomeToSeasonTypeOverrides;
 }

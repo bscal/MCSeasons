@@ -1,7 +1,7 @@
 package me.bscal.seasons.mixin;
 
 import me.bscal.seasons.Seasons;
-import me.bscal.seasons.common.SeasonTimer;
+import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

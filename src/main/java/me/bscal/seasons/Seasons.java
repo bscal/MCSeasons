@@ -1,8 +1,10 @@
 package me.bscal.seasons;
 
+import me.bscal.seasons.common.commands.SetSeasonCommand;
 import me.bscal.seasons.common.seasons.SeasonSettings;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
@@ -30,6 +32,8 @@ public class Seasons implements ModInitializer
 		Instance = this;
 
 		Settings = new SeasonSettings(SETTINGS_FILE);
+
+		CommandRegistrationCallback.EVENT.register(new SetSeasonCommand());
 
 		ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
 			Server = server;

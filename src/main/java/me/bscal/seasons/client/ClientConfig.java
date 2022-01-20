@@ -31,13 +31,14 @@ public class ClientConfig extends Config
 
 		public static final ConfigItem<SeasonsGraphicsLevel> GraphicsLevel = new ConfigItem<>("seasons_graphics_level", SeasonsGraphicsLevel.Fancy, "seasons_graphics_level");
 		public static final ConfigItem<Boolean> EnableFallColors = new ConfigItem<>("enable_fall_colors", true, "enable_fall_leaves");
+		public static final ConfigItem<Integer> LeafFallDistance = new ConfigItem<>("leaf_fall_distance", 32, "leaf_fall_distance");
 
 		/**
 		 * Creates a new {@link ConfigItemGroup} with the list of configs and the name
 		 */
 		public Root()
 		{
-			super(of(GraphicsLevel, EnableFallColors), "root");
+			super(of(GraphicsLevel, EnableFallColors, LeafFallDistance), "root");
 		}
 	}
 

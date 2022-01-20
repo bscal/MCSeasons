@@ -46,7 +46,7 @@ public class Color
 	 */
 	public Color(int color, boolean hasAlpha)
 	{
-		a = (hasAlpha) ? (color >> 24) & 0xff : 255;
+		a = hasAlpha ? (color >> 24) & 0xff : 255;
 		r = (color >> 16) & 0xff;
 		g = (color >> 8) & 0xff;
 		b = color & 0xff;
@@ -305,9 +305,32 @@ public class Color
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals(Object o)
 	{
-		return obj instanceof Color && ((Color) obj).r == r && ((Color) obj).g == g && ((Color) obj).b == b && ((Color) obj).a == a;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		Color color = (Color) o;
+
+		if (r != color.r)
+			return false;
+		if (g != color.g)
+			return false;
+		if (b != color.b)
+			return false;
+		return a == color.a;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = r;
+		result = 31 * result + g;
+		result = 31 * result + b;
+		result = 31 * result + a;
+		return result;
 	}
 
 	public static int getIntFromColor(int r, int g, int b, int a)

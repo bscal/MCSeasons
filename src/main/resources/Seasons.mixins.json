@@ -7,6 +7,11 @@
     "common.ServerWorldMixin"
   ],
   "client": [
+    "client.block.LeavesBlockMixin",
+    "client.BiomeColorsMixin",
+    "client.BiomeInvoker",
+    "client.BiomeMixin",
+    "client.FoliageColorsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -16,13 +16,14 @@ public class SeasonTimer extends PersistentState
 
 	public static final Identifier CHANNEL_NAME = new Identifier(Seasons.MOD_ID, "season_sync");
 	public static final String STATE_NAME = Seasons.MOD_ID + ":season_timer";
-	private static final int SIZE_OF = 8 + 8 + 2 + 2 + 4 + 1;
+	private static final int SIZE_OF = 28;
 
 	private long m_TotalTicks, m_CurrentTicks;
 	private int m_Day, m_Month, m_Year;
 	private int m_SeasonTrackerId;
 	private int m_DaysInCurrentSeason;
 	private long m_LastTick;
+	private boolean m_SeasonChanged;
 	private final PacketByteBuf m_CachedBuffer;
 
 	SeasonTimer()
@@ -30,8 +31,9 @@ public class SeasonTimer extends PersistentState
 		var world = Seasons.Instance.getOverWorld();
 		if (world.isPresent() && !world.get().isClient)
 		{
+			// Loads persistent state and sets Instance
 			m_CachedBuffer = new PacketByteBuf(Unpooled.buffer(SIZE_OF));
-			Instance = world.get().getPersistentStateManager().get((nbt) -> {
+			world.get().getPersistentStateManager().getOrCreate((nbt) -> {
 				this.m_TotalTicks = nbt.getLong("TotalTicks");
 				this.m_CurrentTicks = nbt.getLong("CurrentTicks");
 				this.m_Day = nbt.getInt("Day");
@@ -40,13 +42,13 @@ public class SeasonTimer extends PersistentState
 				this.m_SeasonTrackerId = nbt.getInt("SeasonTrackerId");
 				this.m_DaysInCurrentSeason = nbt.getInt("DaysInCurrentSeason");
 				return this;
-			}, STATE_NAME);
+			}, () -> this, STATE_NAME);
 		}
-		else
+		else // ClientSide is only used to store values all times are managed by server and send to clients.
 		{
 			m_CachedBuffer = null;
-			Instance = this;
 		}
+		Instance = this;
 	}
 
 	public static SeasonTimer GetOrCreate()
@@ -102,6 +104,10 @@ public class SeasonTimer extends PersistentState
 	public void setSeason(int seasonTrackerId)
 	{
 		m_SeasonTrackerId = Math.max(0, Math.min(Seasons.getSettings().Config.MaxSeasons - 1, seasonTrackerId));
+		m_DaysInCurrentSeason = 0;
+		m_SeasonChanged = true;
+		sendToClients();
+		markDirty();
 	}
 
 	// TODO maybe move this out?
@@ -112,15 +118,17 @@ public class SeasonTimer extends PersistentState
 		m_LastTick = m_TotalTicks;
 		m_CachedBuffer.clear();
 		m_CachedBuffer.resetWriterIndex();
-		m_CachedBuffer.writeLong(m_TotalTicks);
-		m_CachedBuffer.writeLong(m_CurrentTicks);
-		m_CachedBuffer.writeShort(m_Day);
-		m_CachedBuffer.writeShort(m_Month);
-		m_CachedBuffer.writeInt(m_Year);
-		m_CachedBuffer.writeShort(m_DaysInCurrentSeason);
-		m_CachedBuffer.writeByte(m_SeasonTrackerId);
+		m_CachedBuffer.writeLong(m_TotalTicks);				// 8
+		m_CachedBuffer.writeLong(m_CurrentTicks);			// 16
+		m_CachedBuffer.writeShort(m_Day);					// 18
+		m_CachedBuffer.writeShort(m_Month);					// 20
+		m_CachedBuffer.writeInt(m_Year);					// 24
+		m_CachedBuffer.writeShort(m_DaysInCurrentSeason);	// 26
+		m_CachedBuffer.writeByte(m_SeasonTrackerId);		// 27
+		m_CachedBuffer.writeBoolean(m_SeasonChanged);		// 28
 		for (ServerPlayerEntity player : PlayerLookup.all(Seasons.Instance.getServer()))
 			ServerPlayNetworking.send(player, CHANNEL_NAME, m_CachedBuffer);
+		m_SeasonChanged = false;
 	}
 
 	// TODO this should probably be handled better ._.
@@ -153,6 +161,7 @@ public class SeasonTimer extends PersistentState
 		m_Year += addedMonths / Seasons.getSettings().Config.MonthsPerYear;
 		tryNextSeason();
 		sendToClients();
+		markDirty();
 	}
 
 	public void addTicks(long ticks)
@@ -172,6 +181,7 @@ public class SeasonTimer extends PersistentState
 			m_CurrentTicks = 0;
 		if (m_TotalTicks - m_LastTick > 20)
 			sendToClients();
+
 		markDirty();
 	}
 
@@ -202,9 +212,7 @@ public class SeasonTimer extends PersistentState
 			int newSeasonId = m_SeasonTrackerId + 1;
 			if (newSeasonId >= Seasons.getSettings().Config.MaxSeasons)
 				newSeasonId = 0;
-
-			m_SeasonTrackerId = newSeasonId;
-			m_DaysInCurrentSeason = 0;
+			setSeason(newSeasonId);
 		}
 	}
 

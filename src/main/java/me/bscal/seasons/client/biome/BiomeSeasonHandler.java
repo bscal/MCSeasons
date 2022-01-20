@@ -17,17 +17,33 @@ import net.minecraft.world.biome.Biome;
 	/**
 	 * This is loaded when the world is loaded to access the dynamic registry for biomes.
 	 */
-	public BiomeSeasonHandler(ClientWorld world)
+	public BiomeSeasonHandler()
 	{
 		ChangerMap = new Object2ObjectOpenHashMap<>();
 	}
 
-	public void initChangers(ClientWorld world)
+	public void reload(ClientWorld world)
 	{
+		ChangerMap.clear();
+		initChangers(world);
+		MinecraftClient.getInstance().worldRenderer.reload();
+	}
+
+	private void initChangers(ClientWorld world)
+	{
+		//MinecraftClient.getInstance().player.networkHandler.getRegistryManager()
 		world.getRegistryManager()
 				.get(Registry.BIOME_KEY)
 				.getEntries()
 				.forEach((pair) -> register(pair.getValue(), BiomeChanger.createDefaultChanger(pair.getValue())));
+	}
+
+	public BiomeChanger getChanger(Biome biome)
+	{
+		if (MinecraftClient.getInstance().world == null)
+			return null;
+		var id = MinecraftClient.getInstance().world.getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+		return ChangerMap.get(id);
 	}
 
 	public void register(Identifier id, BiomeChanger changer)
@@ -45,12 +61,5 @@ import net.minecraft.world.biome.Biome;
 		if (MinecraftClient.getInstance().world == null)
 			return;
 		register(MinecraftClient.getInstance().world.getRegistryManager().get(Registry.BIOME_KEY).getId(biome), changer);
-	}
-
-	public void reload(ClientWorld world)
-	{
-		ChangerMap.clear();
-		initChangers(world);
-		MinecraftClient.getInstance().worldRenderer.reload();
 	}
 }

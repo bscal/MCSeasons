@@ -35,7 +35,7 @@ jobs:
         arguments: build
       
     - name: Creates a Release
-    - uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1
       with:
         artifacts: "*.jar"
         token: ${{ secrets.GITHUB_TOKEN }}

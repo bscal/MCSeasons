@@ -7,7 +7,6 @@ import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -42,7 +41,7 @@ import java.util.Random;
 					double d = (double) pos.getX() + random.nextDouble();
 					double e = (double) pos.getY() - 0.05D;
 					double f = (double) pos.getZ() + random.nextDouble();
-					world.addParticle(new BlockStateParticleEffect(FallingLeavesParticle.FALLING_LEAVES, state), d, e, f, 0.0D, 0.0D, 0.0D);
+					world.addParticle(FallingLeavesParticle.FALLING_LEAVES, d, e, f, 0.0D, 0.0D, 0.0D);
 				}
 			}
 		}

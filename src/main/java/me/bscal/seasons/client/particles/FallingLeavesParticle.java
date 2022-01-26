@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -18,14 +19,12 @@ import org.jetbrains.annotations.Nullable;
 @Environment(EnvType.CLIENT) public class FallingLeavesParticle extends SpriteBillboardParticle
 {
 
-	public static final ParticleType<BlockStateParticleEffect> FALLING_LEAVES = FabricParticleTypes.complex(BlockStateParticleEffect.PARAMETERS_FACTORY);
-
-	// TODO This doesnt need a complex factory prob
+	//public static final ParticleType<BlockStateParticleEffect> FALLING_LEAVES = FabricParticleTypes.complex(BlockStateParticleEffect.PARAMETERS_FACTORY);
+	public static final DefaultParticleType FALLING_LEAVES = FabricParticleTypes.simple();
 
 	private final float angleVelocity;
 
-	protected FallingLeavesParticle(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, SpriteProvider sprites,
-			BlockState state)
+	protected FallingLeavesParticle(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, SpriteProvider sprites)
 	{
 		super(clientWorld, d, e, f, g, h, i);
 		this.setSprite(sprites.getSprite(clientWorld.random));
@@ -83,7 +82,7 @@ import org.jetbrains.annotations.Nullable;
 		}
 	}
 
-	@Environment(EnvType.CLIENT) public static class Factory implements ParticleFactory<BlockStateParticleEffect>
+	@Environment(EnvType.CLIENT) public static class Factory implements ParticleFactory<DefaultParticleType>
 	{
 		private final SpriteProvider spriteProvider;
 
@@ -94,12 +93,10 @@ import org.jetbrains.annotations.Nullable;
 
 		@Nullable
 		@Override
-		public Particle createParticle(BlockStateParticleEffect parameters, ClientWorld world, double x, double y, double z, double velocityX,
-				double velocityY,
+		public Particle createParticle(DefaultParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY,
 				double velocityZ)
 		{
-			BlockState blockState = parameters.getBlockState();
-			return new FallingLeavesParticle(world, x, y, z, velocityX, velocityY, velocityZ, this.spriteProvider, blockState);
+			return new FallingLeavesParticle(world, x, y, z, velocityX, velocityY, velocityZ, this.spriteProvider);
 		}
 	}
 }

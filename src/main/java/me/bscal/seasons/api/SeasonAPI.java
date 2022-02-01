@@ -4,7 +4,8 @@ import me.bscal.seasons.Seasons;
 import me.bscal.seasons.common.seasons.SeasonDate;
 import me.bscal.seasons.common.seasons.SeasonState;
 import me.bscal.seasons.common.seasons.SeasonTimer;
-import me.bscal.seasons.common.seasons.SeasonTypes;
+import me.bscal.seasons.common.seasons.SeasonType;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -13,7 +14,9 @@ import net.minecraft.world.biome.Biome;
 
 public final class SeasonAPI
 {
-	private SeasonAPI() {}
+	private SeasonAPI()
+	{
+	}
 
 	public static Identifier getBiomeId(Biome biome, World world)
 	{
@@ -23,6 +26,11 @@ public final class SeasonAPI
 	public static SeasonState getSeason()
 	{
 		return SeasonTimer.GetOrCreate().getGenericSeason();
+	}
+
+	public static SeasonState getSeason(Entity entity)
+	{
+		return getSeason(getBiomeId(entity.world.getBiome(entity.getBlockPos()), entity.world));
 	}
 
 	public static SeasonState getSeason(Identifier biomeId)
@@ -41,15 +49,15 @@ public final class SeasonAPI
 		return biomeKey.isPresent() ? getSeason(biomeKey.get().getValue()) : getSeason();
 	}
 
-	public static SeasonTypes getSeasonType(Identifier biomeId)
+	public static SeasonType getSeasonType(Identifier biomeId)
 	{
 		return Seasons.getSettings().getSeasonType(biomeId);
 	}
 
-	public static SeasonTypes getSeasonType(Biome biome, World world)
+	public static SeasonType getSeasonType(Biome biome, World world)
 	{
 		var biomeKey = world.getRegistryManager().get(Registry.BIOME_KEY).getKey(biome);
-		return biomeKey.isPresent() ?Seasons.getSettings().getSeasonType(biomeKey.get().getValue()) : SeasonTypes.FourSeasonPerYear;
+		return biomeKey.isPresent() ? Seasons.getSettings().getSeasonType(biomeKey.get().getValue()) : SeasonType.FourSeasonPerYear;
 	}
 
 	public static SeasonDate getDate()
@@ -67,7 +75,10 @@ public final class SeasonAPI
 		return SeasonTimer.GetOrCreate().getTotalTicks();
 	}
 
-	public static void addDays(int days) { SeasonTimer.GetOrCreate().addDays(days); }
+	public static void addDays(int days)
+	{
+		SeasonTimer.GetOrCreate().addDays(days);
+	}
 
 	public static void addTicks(long ticks)
 	{
@@ -77,6 +88,11 @@ public final class SeasonAPI
 	public static void setSeason(int seasonTrackerId)
 	{
 		SeasonTimer.GetOrCreate().setSeason(seasonTrackerId);
+	}
+
+	public static int getSeasonId()
+	{
+		return SeasonTimer.GetOrCreate().getSeasonalSectionTracker();
 	}
 
 }

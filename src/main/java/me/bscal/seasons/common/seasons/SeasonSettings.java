@@ -20,7 +20,7 @@ public class SeasonSettings
 {
 	public boolean DebugMode;
 	public Config Config;
-	public final Map<Identifier, SeasonTypes> BiomeToSeasonType;
+	public final Map<Identifier, SeasonType> BiomeToSeasonType;
 	private final ConfigurationOptions m_Options;
 
 	public SeasonSettings(String filename)
@@ -36,20 +36,20 @@ public class SeasonSettings
 		load(filename);
 	}
 
-	public SeasonTypes getSeasonType(Identifier biomeId)
+	public SeasonType getSeasonType(Identifier biomeId)
 	{
-		return BiomeToSeasonType.getOrDefault(biomeId, SeasonTypes.FourSeasonPerYear);
+		return BiomeToSeasonType.getOrDefault(biomeId, SeasonType.FourSeasonPerYear);
 	}
 
-	public Map<Identifier, SeasonTypes> biomeToSeasonsSupplier()
+	public Map<Identifier, SeasonType> biomeToSeasonsSupplier()
 	{
-		Map<Identifier, SeasonTypes> biomeToSeasonType = new HashMap<>();
-		biomeToSeasonType.put(BiomeKeys.BAMBOO_JUNGLE.getValue(), SeasonTypes.TropicalSeason);
-		biomeToSeasonType.put(new Identifier("plains"), SeasonTypes.FourSeasonPerYear);
+		Map<Identifier, SeasonType> biomeToSeasonType = new HashMap<>();
+		biomeToSeasonType.put(BiomeKeys.BAMBOO_JUNGLE.getValue(), SeasonType.TropicalSeason);
+		biomeToSeasonType.put(new Identifier("plains"), SeasonType.FourSeasonPerYear);
 		return biomeToSeasonType;
 	}
 
-	public void register(Identifier id, SeasonTypes type, boolean replace)
+	public void register(Identifier id, SeasonType type, boolean replace)
 	{
 		if (replace)
 			BiomeToSeasonType.replace(id, type);
@@ -113,5 +113,5 @@ public class SeasonSettings
 	@Setting("MonthsPerYear") public int MonthsPerYear = 12;
 	@Setting("DaysPerSeason") @Comment("Around 7 irl hours per season") public int DaysPerSeason = 7 * 4;
 	@Setting("MaxSeasons") public int MaxSeasons = 4;
-	@Setting("BiomeToSeasonTypeOverrides") public Map<Identifier, SeasonTypes> BiomeToSeasonTypeOverrides;
+	@Setting("BiomeToSeasonTypeOverrides") public Map<Identifier, SeasonType> BiomeToSeasonTypeOverrides;
 }

@@ -1,6 +1,6 @@
 package me.bscal.seasons.common.seasons;
 
-public enum SeasonTypes
+public enum SeasonType
 {
 	FourSeasonPerYear(new SeasonState[]{ SeasonState.Spring, SeasonState.Summer, SeasonState.Autumn, SeasonState.Winter }),
 	TropicalSeason(new SeasonState[]{ SeasonState.Wet, SeasonState.Wet, SeasonState.Dry, SeasonState.Dry }),
@@ -9,7 +9,7 @@ public enum SeasonTypes
 
 	public final SeasonState[] Seasons;
 
-	SeasonTypes(SeasonState[] seasonalSections)
+	SeasonType(SeasonState[] seasonalSections)
 	{
 		Seasons = seasonalSections;
 	}
@@ -19,5 +19,4 @@ public enum SeasonTypes
 		int clampedSection = Math.max(0, Math.min(Seasons.length, seasonSection));
 		return Seasons[clampedSection];
 	}
-
 }

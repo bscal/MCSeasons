@@ -3,19 +3,16 @@ package me.bscal.seasons.common.temperature;
 import me.bscal.seasons.Seasons;
 import me.bscal.seasons.api.SeasonAPI;
 import me.bscal.seasons.common.seasons.SeasonState;
-import me.bscal.seasons.common.seasons.SeasonTypes;
+import me.bscal.seasons.common.seasons.SeasonType;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.LightType;
 import net.minecraft.world.biome.Biome;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public final class TemperatureAPI
@@ -48,7 +45,7 @@ public final class TemperatureAPI
 
 		// Seasonal Temperatures
 		// Season / Air
-		SeasonTypes seasonType = SeasonAPI.getSeasonType(biomeId);
+		SeasonType seasonType = SeasonAPI.getSeasonType(biomeId);
 		SeasonState seasonState = SeasonAPI.getSeason(biomeId);
 
 		boolean isNight = sPlayer.world.getTimeOfDay() > 20000 || sPlayer.world.getTimeOfDay() < 6000;

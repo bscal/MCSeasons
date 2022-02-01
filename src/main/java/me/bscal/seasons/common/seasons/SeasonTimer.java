@@ -93,7 +93,7 @@ public class SeasonTimer extends PersistentState
 
 	public SeasonState getGenericSeason()
 	{
-		return SeasonTypes.FourSeasonPerYear.getSeason(m_SeasonTrackerId);
+		return SeasonType.FourSeasonPerYear.getSeason(m_SeasonTrackerId);
 	}
 
 	public SeasonState getSeason(Identifier biomeId)

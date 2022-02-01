@@ -4,6 +4,8 @@ plugins {
     id 'net.ltgt.errorprone' version '2.0.2'
 }
 
+apply plugin: 'maven-publish'
+
 version = project.mod_version
 group = project.maven_group
 
@@ -80,6 +82,8 @@ jar {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId = 'com.github.bscal'
+            artifactId = 'MCSeasons'
             from components.java
         }
     }

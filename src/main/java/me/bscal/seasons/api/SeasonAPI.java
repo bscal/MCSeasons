@@ -80,11 +80,6 @@ public final class SeasonAPI
 		SeasonTimer.GetOrCreate().addDays(days);
 	}
 
-	public static void addTicks(long ticks)
-	{
-		SeasonTimer.GetOrCreate().addTicks(ticks);
-	}
-
 	public static void setSeason(int seasonTrackerId)
 	{
 		SeasonTimer.GetOrCreate().setSeason(seasonTrackerId);

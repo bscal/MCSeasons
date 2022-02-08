@@ -17,7 +17,7 @@ public class ServerWorldMixin
 	{
 		var world = (ServerWorld) (Object) this;
 		if (world == Seasons.Instance.getServer().getOverworld())
-			SeasonTimer.GetOrCreate().setTimeOfDay(timeOfDay);
+			SeasonTimer.GetOrCreate().updateTime();
 	}
 
 

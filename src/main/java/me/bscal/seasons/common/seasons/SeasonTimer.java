@@ -7,8 +7,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
+
+import java.util.Optional;
 
 public class SeasonTimer extends PersistentState
 {
@@ -25,15 +28,17 @@ public class SeasonTimer extends PersistentState
 	private long m_LastTick;
 	private boolean m_SeasonChanged;
 	private final PacketByteBuf m_CachedBuffer;
+	private final ServerWorld m_World;
 
 	SeasonTimer()
 	{
-		var world = Seasons.Instance.getOverWorld();
+		Optional<ServerWorld> world = Seasons.Instance.getOverWorld();
 		if (world.isPresent() && !world.get().isClient)
 		{
+			m_World = world.get();
 			// Loads persistent state and sets Instance
 			m_CachedBuffer = new PacketByteBuf(Unpooled.buffer(SIZE_OF));
-			world.get().getPersistentStateManager().getOrCreate((nbt) -> {
+			m_World.getPersistentStateManager().getOrCreate((nbt) -> {
 				this.m_TotalTicks = nbt.getLong("TotalTicks");
 				this.m_CurrentTicks = nbt.getLong("CurrentTicks");
 				this.m_Day = nbt.getInt("Day");
@@ -47,14 +52,14 @@ public class SeasonTimer extends PersistentState
 		else // ClientSide is only used to store values all times are managed by server and send to clients.
 		{
 			m_CachedBuffer = null;
+			m_World = null;
 		}
 		Instance = this;
 	}
 
 	public static SeasonTimer GetOrCreate()
 	{
-		if (Instance == null)
-			Instance = new SeasonTimer();
+		if (Instance == null) Instance = new SeasonTimer();
 		return Instance;
 	}
 
@@ -88,7 +93,10 @@ public class SeasonTimer extends PersistentState
 
 	public SeasonDate getDate()
 	{
-		return new SeasonDate(m_Day, m_Month, m_Year);
+		int days = m_Day % Seasons.getSettings().Config.DaysPerMonth;
+		int months = m_Day / Seasons.getSettings().Config.DaysPerMonth;
+		int years = months / Seasons.getSettings().Config.MonthsPerYear;
+		return new SeasonDate(days, months, years);
 	}
 
 	public SeasonState getGenericSeason()
@@ -113,19 +121,18 @@ public class SeasonTimer extends PersistentState
 	// TODO maybe move this out?
 	public void sendToClients()
 	{
-		if (isClient())
-			return;
+		if (isClient()) return;
 		m_LastTick = m_TotalTicks;
 		m_CachedBuffer.clear();
 		m_CachedBuffer.resetWriterIndex();
-		m_CachedBuffer.writeLong(m_TotalTicks);				// 8
-		m_CachedBuffer.writeLong(m_CurrentTicks);			// 16
-		m_CachedBuffer.writeShort(m_Day);					// 18
-		m_CachedBuffer.writeShort(m_Month);					// 20
-		m_CachedBuffer.writeInt(m_Year);					// 24
-		m_CachedBuffer.writeShort(m_DaysInCurrentSeason);	// 26
-		m_CachedBuffer.writeByte(m_SeasonTrackerId);		// 27
-		m_CachedBuffer.writeBoolean(m_SeasonChanged);		// 28
+		m_CachedBuffer.writeLong(m_TotalTicks);                // 8
+		m_CachedBuffer.writeLong(m_CurrentTicks);            // 16
+		m_CachedBuffer.writeShort(m_Day);                    // 18
+		m_CachedBuffer.writeShort(m_Month);                    // 20
+		m_CachedBuffer.writeInt(m_Year);                    // 24
+		m_CachedBuffer.writeShort(m_DaysInCurrentSeason);    // 26
+		m_CachedBuffer.writeByte(m_SeasonTrackerId);        // 27
+		m_CachedBuffer.writeBoolean(m_SeasonChanged);        // 28
 		for (ServerPlayerEntity player : PlayerLookup.all(Seasons.Instance.getServer()))
 			ServerPlayNetworking.send(player, CHANNEL_NAME, m_CachedBuffer);
 		m_SeasonChanged = false;
@@ -143,86 +150,55 @@ public class SeasonTimer extends PersistentState
 		m_SeasonTrackerId = seasonalSectionTracker;
 	}
 
-	public void setTimeOfDay(long timeOfDay)
-	{
-		// checks if minecraft timeOfDay has ticked over to a new day
-		long diff = timeOfDay - (timeOfDay < m_CurrentTicks ? m_CurrentTicks - Seasons.getSettings().Config.TicksPerDay : m_CurrentTicks);
-		addTicks(diff);
-	}
-
 	public void addDays(int days)
 	{
-		if (isClient())
-			return;
-		m_TotalTicks += (long)days * Seasons.getSettings().Config.TicksPerDay;
+		if (isClient()) return;
+		m_TotalTicks += (long) days * Seasons.getSettings().Config.TicksPerDay;
+		nextDay(days);
+		markDirty();
+	}
+
+	public void updateTime()
+	{
+		if (isClient()) return;
+
+		long timeOfDay = m_World.getTimeOfDay();
+		long diff = timeOfDay - m_CurrentTicks;
+		if (diff < 0) diff += Seasons.getSettings().Config.TicksPerDay;
+		boolean newDay = timeOfDay < m_CurrentTicks;
+
+		if (Seasons.getSettings().DebugMode) logDebug(diff);
+
+		m_TotalTicks += diff;
+		m_CurrentTicks = timeOfDay;
+
+		if (newDay) nextDay(1);
+		if (m_TotalTicks - m_LastTick > 20) sendToClients();
+		markDirty();
+	}
+
+	private void nextDay(int days)
+	{
 		m_Day += days;
-		int addedMonths = days / Seasons.getSettings().Config.DaysPerMonth;
-		m_Month += addedMonths;
-		m_Year += addedMonths / Seasons.getSettings().Config.MonthsPerYear;
-		tryNextSeason();
-		sendToClients();
-		markDirty();
-	}
-
-	public void addTicks(long ticks)
-	{
-		if (isClient())
-			return;
-		if (Seasons.getSettings().DebugMode)
-			logDebug(ticks);
-		m_TotalTicks += ticks;
-		m_CurrentTicks += ticks;
-		if (m_CurrentTicks >= Seasons.getSettings().Config.TicksPerDay)
+		m_DaysInCurrentSeason += days;
+		int daysPerSeason = Seasons.getSettings().Config.DaysPerSeason;
+		if (m_DaysInCurrentSeason >= daysPerSeason)
 		{
-			m_CurrentTicks -= Seasons.getSettings().Config.TicksPerDay;
-			nextDay();
-		}
-		if (m_CurrentTicks < 0)
-			m_CurrentTicks = 0;
-		if (m_TotalTicks - m_LastTick > 20)
-			sendToClients();
-
-		markDirty();
-	}
-
-	private void nextDay()
-	{
-		if (isClient())
-			return;
-		if (m_Day++ >= Seasons.getSettings().Config.DaysPerMonth)
-		{
-			m_Day = 0;
-			if (m_Month++ >= Seasons.getSettings().Config.MonthsPerYear)
-			{
-				m_Month = 0;
-				m_Year++;
-			}
-			tryNextSeason();
-		}
-		sendToClients();
-	}
-
-	private void tryNextSeason()
-	{
-		if (isClient())
-			return;
-
-		if (m_DaysInCurrentSeason >= Seasons.getSettings().Config.DaysPerSeason)
-		{
+			m_DaysInCurrentSeason -= daysPerSeason;
 			int newSeasonId = m_SeasonTrackerId + 1;
-			if (newSeasonId >= Seasons.getSettings().Config.MaxSeasons)
-				newSeasonId = 0;
+			if (newSeasonId >= Seasons.getSettings().Config.MaxSeasons) newSeasonId = 0;
 			setSeason(newSeasonId);
 		}
+		sendToClients();
 	}
 
 	private void logDebug(long addedTick)
 	{
 		Seasons.LOGGER.info(String.format("""
-				Adding tick: %d\s
-				-> TotalTicks %d | CurrentTick %d | SeasonId %d\s
-				-> D/M/Y %d/%d/%d
-				""", addedTick, m_TotalTicks, m_LastTick, m_SeasonTrackerId, m_Day, m_Month, m_Year));
+										  Adding tick: %d\s
+										  -> TotalTicks %d | CurrentTick %d | SeasonId %d\s
+										  -> D/M/Y %d/%d/%d
+										  """, addedTick, m_TotalTicks, m_CurrentTicks, m_SeasonTrackerId, m_Day, m_Month, m_Year));
 	}
 
 	private boolean isClient()

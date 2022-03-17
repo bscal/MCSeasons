@@ -20,8 +20,7 @@ public class Seasons implements ModInitializer
 	public static Seasons Instance;
 
 	public static final String MOD_ID = "seasons";
-	public static final String MOD_NAME = "Seasons";
-	public static final org.apache.logging.log4j.core.Logger LOGGER = (Logger) LogManager.getLogger("AdvancedPlayer");
+	public static final org.apache.logging.log4j.core.Logger LOGGER = (Logger) LogManager.getLogger("Seasons");
 
 	public static final String SETTINGS_FILE = "seasons.conf";
 

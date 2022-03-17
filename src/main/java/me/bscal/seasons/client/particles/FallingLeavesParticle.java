@@ -40,8 +40,9 @@ import org.jetbrains.annotations.Nullable;
 		this.velocityZ = clientWorld.random.nextFloat() * vModifier - vModifierOffset;
 		this.angleVelocity = clientWorld.random.nextFloat() - 0.5f;
 
-		Biome b = clientWorld.getBiome(new BlockPos(d, e, f));
-		var id = clientWorld.getRegistryManager().get(Registry.BIOME_KEY).getId(b);
+
+		var biome = clientWorld.getBiome(new BlockPos(d, e, f));
+		var id = clientWorld.getRegistryManager().get(Registry.BIOME_KEY).getId(biome.value());
 		var changer = SeasonsClient.SeasonHandler.ChangerMap.get(id);
 		Color color = new Color(changer.getFallLeavesColor((int) d, (int) f));
 		float[] rgba = color.toFloats();

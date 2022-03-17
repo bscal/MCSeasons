@@ -2,7 +2,7 @@ package me.bscal.seasons.mixin.client.block;
 
 import me.bscal.seasons.client.ClientConfig;
 import me.bscal.seasons.client.particles.FallingLeavesParticle;
-import me.bscal.seasons.common.seasons.SeasonState;
+import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
@@ -26,7 +26,7 @@ import java.util.Random;
 		int leafFallDist = ClientConfig.Root.LeafFallDistance.getValue();
 		if (leafFallDist > 0 && pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), leafFallDist))
 		{
-			int bound = SeasonTimer.GetOrCreate().getGenericSeason() == SeasonState.Autumn ? 32 : 96;
+			int bound = SeasonTimer.GetOrCreate().getGenericSeason() == Season.Autumn ? 32 : 96;
 
 			if (world.isRaining())
 				bound -= 8;

@@ -16,7 +16,7 @@ public class GetSeasonCommand implements Command<FabricClientCommandSource>, Cli
 	public int run(CommandContext<FabricClientCommandSource> context)
 	{
 		var season = SeasonTimer.GetOrCreate().getGenericSeason();
-		var seasonId = SeasonTimer.GetOrCreate().getSeasonalSectionTracker();
+		var seasonId = SeasonTimer.GetOrCreate().getInternalSeasonId();
 		var date = SeasonTimer.GetOrCreate().getDate();
 		MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(String.format("Season: %s, SeasonId: %d, Date: %s", season, seasonId, date)));
 		return 0;

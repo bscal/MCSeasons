@@ -2,7 +2,7 @@ package me.bscal.seasons.client.biome;
 
 import me.bscal.seasons.api.SeasonAPI;
 import me.bscal.seasons.client.ClientConfig;
-import me.bscal.seasons.common.seasons.SeasonState;
+import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import me.bscal.seasons.common.utils.Color;
 import me.bscal.seasons.common.utils.FastNoiseLite;
@@ -54,23 +54,23 @@ import net.minecraft.world.biome.Biome;
 	{
 		if (GrassColors == null)
 			return ERROR_PINK; // Safety check because these arrays should never be null
-		if (SeasonTimer.GetOrCreate().getSeasonalSectionTracker() >= GrassColors.length)
+		if (SeasonTimer.GetOrCreate().getInternalSeasonId() >= GrassColors.length)
 			return DefaultColor; // If the array doesnt contain the season id use the default color
-		return GrassColors[SeasonTimer.GetOrCreate().getSeasonalSectionTracker()];
+		return GrassColors[SeasonTimer.GetOrCreate().getInternalSeasonId()];
 	}
 
 	public int getFoliageColor()
 	{
 		if (FoliageColor == null)
 			return ERROR_PINK; // Safety check because these arrays should never be null
-		if (SeasonTimer.GetOrCreate().getSeasonalSectionTracker() >= FoliageColor.length)
+		if (SeasonTimer.GetOrCreate().getInternalSeasonId() >= FoliageColor.length)
 			return DefaultColor; // If the array doesnt contain the season id use the default color
-		return FoliageColor[SeasonTimer.GetOrCreate().getSeasonalSectionTracker()];
+		return FoliageColor[SeasonTimer.GetOrCreate().getInternalSeasonId()];
 	}
 
 	public int getFallLeavesColor(int x, int y)
 	{
-		if (ClientConfig.Root.EnableFallColors.getValue() && SeasonAPI.getSeason() == SeasonState.Autumn)
+		if (ClientConfig.Root.EnableFallColors.getValue() && SeasonAPI.getSeason() == Season.Autumn)
 			return getRandomFallColor(x, y);
 		return getFoliageColor();
 	}

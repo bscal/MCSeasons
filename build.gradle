@@ -55,7 +55,7 @@ tasks.withType(JavaCompile).configureEach {
     }
 
     // set true to enable errorprone
-    options.errorprone.enabled = false
+    options.errorprone.enabled = true
     options.errorprone.excludedPaths = ".*/FastNoiseLite.*"
 }
 

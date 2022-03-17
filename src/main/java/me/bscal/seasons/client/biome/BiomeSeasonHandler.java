@@ -34,8 +34,8 @@ import net.minecraft.world.biome.Biome;
 		//MinecraftClient.getInstance().player.networkHandler.getRegistryManager()
 		world.getRegistryManager()
 				.get(Registry.BIOME_KEY)
-				.getEntries()
-				.forEach((pair) -> register(pair.getValue(), BiomeChanger.createDefaultChanger(pair.getValue())));
+				.streamEntries()
+				.forEach((pair) -> register(pair.registryKey(), BiomeChanger.createDefaultChanger(pair.value())));
 	}
 
 	public BiomeChanger getChanger(Biome biome)

@@ -2,9 +2,9 @@ package me.bscal.seasons.api;
 
 import me.bscal.seasons.Seasons;
 import me.bscal.seasons.common.seasons.SeasonDate;
-import me.bscal.seasons.common.seasons.SeasonState;
+import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
-import me.bscal.seasons.common.seasons.SeasonType;
+import me.bscal.seasons.common.seasons.SeasonalType;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -14,50 +14,46 @@ import net.minecraft.world.biome.Biome;
 
 public final class SeasonAPI
 {
-	private SeasonAPI()
-	{
-	}
-
 	public static Identifier getBiomeId(Biome biome, World world)
 	{
 		return world.getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
 	}
 
-	public static SeasonState getSeason()
+	public static Season getSeason()
 	{
 		return SeasonTimer.GetOrCreate().getGenericSeason();
 	}
 
-	public static SeasonState getSeason(Entity entity)
+	public static Season getSeasonByBiome(Entity entity)
 	{
-		return getSeason(getBiomeId(entity.world.getBiome(entity.getBlockPos()), entity.world));
+		return getSeasonByBiome(getBiomeId(entity.world.getBiome(entity.getBlockPos()).value(), entity.world));
 	}
 
-	public static SeasonState getSeason(Identifier biomeId)
+	public static Season getSeasonByBiome(Identifier biomeId)
 	{
 		return SeasonTimer.GetOrCreate().getSeason(biomeId);
 	}
 
-	public static SeasonState getSeason(RegistryKey<Biome> biomeKey)
+	public static Season getSeasonByBiome(RegistryKey<Biome> biomeKey)
 	{
-		return getSeason(biomeKey.getValue());
+		return getSeasonByBiome(biomeKey.getValue());
 	}
 
-	public static SeasonState getSeason(Biome biome, World world)
+	public static Season getSeasonByBiome(Biome biome, World world)
 	{
 		var biomeKey = world.getRegistryManager().get(Registry.BIOME_KEY).getKey(biome);
-		return biomeKey.isPresent() ? getSeason(biomeKey.get().getValue()) : getSeason();
+		return biomeKey.isPresent() ? getSeasonByBiome(biomeKey.get().getValue()) : getSeason();
 	}
 
-	public static SeasonType getSeasonType(Identifier biomeId)
+	public static SeasonalType getSeasonalType(Identifier biomeId)
 	{
 		return Seasons.getSettings().getSeasonType(biomeId);
 	}
 
-	public static SeasonType getSeasonType(Biome biome, World world)
+	public static SeasonalType getSeasonalType(Biome biome, World world)
 	{
 		var biomeKey = world.getRegistryManager().get(Registry.BIOME_KEY).getKey(biome);
-		return biomeKey.isPresent() ? Seasons.getSettings().getSeasonType(biomeKey.get().getValue()) : SeasonType.FourSeasonPerYear;
+		return biomeKey.isPresent() ? Seasons.getSettings().getSeasonType(biomeKey.get().getValue()) : SeasonalType.FourSeasonPerYear;
 	}
 
 	public static SeasonDate getDate()
@@ -85,9 +81,9 @@ public final class SeasonAPI
 		SeasonTimer.GetOrCreate().setSeason(seasonTrackerId);
 	}
 
-	public static int getSeasonId()
+	public static int getInternalSeasonId()
 	{
-		return SeasonTimer.GetOrCreate().getSeasonalSectionTracker();
+		return SeasonTimer.GetOrCreate().getInternalSeasonId();
 	}
 
 }

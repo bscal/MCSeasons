@@ -1,6 +1,9 @@
 package me.bscal.seasons.common.seasons;
 
-public enum SeasonState
+/**
+ * Enum of possible seasons.
+ */
+public enum Season
 {
 	Spring, Summer, Autumn, Winter, Wet, Dry, IceAge,
 }

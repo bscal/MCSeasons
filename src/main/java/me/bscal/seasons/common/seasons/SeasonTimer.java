@@ -24,7 +24,7 @@ public class SeasonTimer extends PersistentState
 	private long m_TotalTicks, m_CurrentTicks;
 	transient private long m_LastTick;
 	private int m_Day, m_Month, m_Year;
-	private int m_SeasonTrackerId;
+	private int m_InternalSeasonId;
 	private int m_DaysInCurrentSeason;
 	transient private boolean m_SeasonChanged;
 	transient private final PacketByteBuf m_CachedBuffer;
@@ -45,7 +45,7 @@ public class SeasonTimer extends PersistentState
 				this.m_Day = nbt.getInt("Day");
 				this.m_Month = nbt.getInt("Month");
 				this.m_Year = nbt.getInt("Year");
-				this.m_SeasonTrackerId = nbt.getInt("SeasonTrackerId");
+				this.m_InternalSeasonId = nbt.getInt("InternalSeasonId");
 				this.m_DaysInCurrentSeason = nbt.getInt("DaysInCurrentSeason");
 				return this;
 			}, () -> this, STATE_NAME);
@@ -71,7 +71,7 @@ public class SeasonTimer extends PersistentState
 		nbt.putInt("Day", m_Day);
 		nbt.putInt("Month", m_Month);
 		nbt.putInt("Year", m_Year);
-		nbt.putInt("SeasonTrackerId", m_SeasonTrackerId);
+		nbt.putInt("InternalSeasonId", m_InternalSeasonId);
 		nbt.putInt("DaysInCurrentSeason", m_DaysInCurrentSeason);
 		return nbt;
 	}
@@ -86,9 +86,9 @@ public class SeasonTimer extends PersistentState
 		return m_CurrentTicks;
 	}
 
-	public int getSeasonalSectionTracker()
+	public int getInternalSeasonId()
 	{
-		return m_SeasonTrackerId;
+		return m_InternalSeasonId;
 	}
 
 	public SeasonDate getDate()
@@ -99,19 +99,19 @@ public class SeasonTimer extends PersistentState
 		return new SeasonDate(days, months, years);
 	}
 
-	public SeasonState getGenericSeason()
+	public Season getGenericSeason()
 	{
-		return SeasonType.FourSeasonPerYear.getSeason(m_SeasonTrackerId);
+		return SeasonalType.FourSeasonPerYear.getSeason(m_InternalSeasonId);
 	}
 
-	public SeasonState getSeason(Identifier biomeId)
+	public Season getSeason(Identifier biomeId)
 	{
-		return Seasons.getSettings().getSeasonType(biomeId).getSeason(m_SeasonTrackerId);
+		return Seasons.getSettings().getSeasonType(biomeId).getSeason(m_InternalSeasonId);
 	}
 
 	public void setSeason(int seasonTrackerId)
 	{
-		m_SeasonTrackerId = Math.max(0, Math.min(Seasons.getSettings().Config.MaxSeasons - 1, seasonTrackerId));
+		m_InternalSeasonId = Math.max(0, Math.min(Seasons.getSettings().Config.MaxSeasons - 1, seasonTrackerId));
 		m_DaysInCurrentSeason = 0;
 		m_SeasonChanged = true;
 		sendToClients();
@@ -131,7 +131,7 @@ public class SeasonTimer extends PersistentState
 		m_CachedBuffer.writeShort(m_Month);                    // 20
 		m_CachedBuffer.writeInt(m_Year);                    // 24
 		m_CachedBuffer.writeShort(m_DaysInCurrentSeason);    // 26
-		m_CachedBuffer.writeByte(m_SeasonTrackerId);        // 27
+		m_CachedBuffer.writeByte(m_InternalSeasonId);        // 27
 		m_CachedBuffer.writeBoolean(m_SeasonChanged);        // 28
 		for (ServerPlayerEntity player : PlayerLookup.all(Seasons.Instance.getServer()))
 			ServerPlayNetworking.send(player, CHANNEL_NAME, m_CachedBuffer);
@@ -139,7 +139,7 @@ public class SeasonTimer extends PersistentState
 	}
 
 	// TODO this should probably be handled better ._.
-	public void readFromServer(long totalTicks, long currentTicks, int day, int month, int year, int daysInCurrentSeason, int seasonalSectionTracker)
+	public void readFromServer(long totalTicks, long currentTicks, int day, int month, int year, int daysInCurrentSeason, int internalSeasonId)
 	{
 		m_TotalTicks = totalTicks;
 		m_CurrentTicks = currentTicks;
@@ -147,7 +147,7 @@ public class SeasonTimer extends PersistentState
 		m_Month = month;
 		m_Year = year;
 		m_DaysInCurrentSeason = daysInCurrentSeason;
-		m_SeasonTrackerId = seasonalSectionTracker;
+		m_InternalSeasonId = internalSeasonId;
 	}
 
 	public void addDays(int days)
@@ -187,7 +187,7 @@ public class SeasonTimer extends PersistentState
 		if (m_DaysInCurrentSeason >= daysPerSeason)
 		{
 			m_DaysInCurrentSeason -= daysPerSeason;
-			int newSeasonId = m_SeasonTrackerId + 1;
+			int newSeasonId = m_InternalSeasonId + 1;
 			if (newSeasonId >= Seasons.getSettings().Config.MaxSeasons) newSeasonId = 0;
 			setSeason(newSeasonId);
 		}
@@ -203,9 +203,9 @@ public class SeasonTimer extends PersistentState
 			\tTotalTicks = %d
 			\tCurrentTicks = %d
 			\tDate = %d / %d / %d
-			\tSeasonTrackerId = %d
+			\tInternalSeasonId = %d
 			\tDaysInCurrentSeason = %d
-			""", addedTick, m_TotalTicks, m_CurrentTicks, m_Day, m_Month, m_Year, m_SeasonTrackerId, m_DaysInCurrentSeason));
+			""", addedTick, m_TotalTicks, m_CurrentTicks, m_Day, m_Month, m_Year, m_InternalSeasonId, m_DaysInCurrentSeason));
 	}
 
 	private boolean isClient()

@@ -16,6 +16,8 @@ public class ServerWorldMixin
 	public void onSetTimeOfDay(long timeOfDay, CallbackInfo ci)
 	{
 		var world = (ServerWorld) (Object) this;
+		// TODO current seasons and time only support 1 world
+		// not sure if I want to support multiple worlds
 		if (world == Seasons.Instance.getServer().getOverworld())
 			SeasonTimer.GetOrCreate().updateTime();
 	}

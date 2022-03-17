@@ -307,12 +307,11 @@ public class Color
 	@Override
 	public boolean equals(Object o)
 	{
+
 		if (this == o)
 			return true;
-		if (o == null || getClass() != o.getClass())
+		if (!(o instanceof Color color))
 			return false;
-
-		Color color = (Color) o;
 
 		if (r != color.r)
 			return false;

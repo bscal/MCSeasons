@@ -2,7 +2,7 @@ package me.bscal.seasons.mixin.client;
 
 import me.bscal.seasons.client.ClientConfig;
 import me.bscal.seasons.client.SeasonsClient;
-import me.bscal.seasons.common.seasons.SeasonState;
+import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.world.biome.Biome;
@@ -39,7 +39,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 	private static int FoliageColorOverride(Biome biome, double x, double y)
 	{
 		if (ClientConfig.Root.GraphicsLevel.getValue() != ClientConfig.SeasonsGraphicsLevel.Disabled && SeasonTimer.GetOrCreate()
-				.getGenericSeason() == SeasonState.Autumn)
+				.getGenericSeason() == Season.Autumn)
 		{
 			return SeasonsClient.SeasonHandler.getChanger(biome).getRandomFallColor((int) x, (int) y);
 		}

@@ -3,7 +3,7 @@ package me.bscal.seasons.mixin.client;
 import me.bscal.seasons.client.ClientConfig;
 import me.bscal.seasons.client.SeasonsClient;
 import me.bscal.seasons.client.biome.BiomeChanger;
-import me.bscal.seasons.common.seasons.SeasonState;
+import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import me.bscal.seasons.common.utils.Color;
 import net.minecraft.client.color.world.FoliageColors;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 		BiomeChanger changer = SeasonsClient.SeasonHandler.ChangerMap.get(BiomeKeys.BIRCH_FOREST.getValue());
 		if (changer != null)
 		{
-			if (ClientConfig.Root.EnableFallColors.getValue() && SeasonTimer.GetOrCreate().getGenericSeason() == SeasonState.Autumn)
+			if (ClientConfig.Root.EnableFallColors.getValue() && SeasonTimer.GetOrCreate().getGenericSeason() == Season.Autumn)
 				cir.setReturnValue(FALL_BIRCH_COLOR);
 			else
 				cir.setReturnValue(changer.getFoliageColor());

@@ -25,6 +25,6 @@ public class SetSeasonCommand implements Command<ServerCommandSource>, CommandRe
 	@Override
 	public void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated)
 	{
-		dispatcher.register(literal("season").then(literal("set").then(argument(SEASON_ARG, IntegerArgumentType.integer(0, 3)).executes(this))));
+		dispatcher.register(literal("seasons").then(literal("set").then(argument(SEASON_ARG, IntegerArgumentType.integer(0, 3)).executes(this))));
 	}
 }

@@ -22,16 +22,17 @@ public class SeasonTimer extends PersistentState
 	private static final int SIZE_OF = 28;
 
 	private long m_TotalTicks, m_CurrentTicks;
+	transient private long m_LastTick;
 	private int m_Day, m_Month, m_Year;
 	private int m_SeasonTrackerId;
 	private int m_DaysInCurrentSeason;
-	private long m_LastTick;
-	private boolean m_SeasonChanged;
-	private final PacketByteBuf m_CachedBuffer;
-	private final ServerWorld m_World;
+	transient private boolean m_SeasonChanged;
+	transient private final PacketByteBuf m_CachedBuffer;
+	transient private final ServerWorld m_World;
 
 	SeasonTimer()
 	{
+		Instance = this;
 		Optional<ServerWorld> world = Seasons.Instance.getOverWorld();
 		if (world.isPresent() && !world.get().isClient)
 		{
@@ -54,7 +55,6 @@ public class SeasonTimer extends PersistentState
 			m_CachedBuffer = null;
 			m_World = null;
 		}
-		Instance = this;
 	}
 
 	public static SeasonTimer GetOrCreate()
@@ -164,17 +164,19 @@ public class SeasonTimer extends PersistentState
 
 		long timeOfDay = m_World.getTimeOfDay();
 		long diff = timeOfDay - m_CurrentTicks;
+		// Wraps the diff values in case we go into another day. 23000 -> 1000 would be a 2000 diff.
 		if (diff < 0) diff += Seasons.getSettings().Config.TicksPerDay;
+		// Since time wraps at 24000, any values less than current ticks would be a new day
 		boolean newDay = timeOfDay < m_CurrentTicks;
 
-		if (Seasons.getSettings().DebugMode) logDebug(diff);
+		logDebug(diff);
 
 		m_TotalTicks += diff;
 		m_CurrentTicks = timeOfDay;
 
 		if (newDay) nextDay(1);
 		if (m_TotalTicks - m_LastTick > 20) sendToClients();
-		markDirty();
+		else markDirty();
 	}
 
 	private void nextDay(int days)
@@ -194,16 +196,21 @@ public class SeasonTimer extends PersistentState
 
 	private void logDebug(long addedTick)
 	{
-		Seasons.LOGGER.info(String.format("""
-										  Adding tick: %d\s
-										  -> TotalTicks %d | CurrentTick %d | SeasonId %d\s
-										  -> D/M/Y %d/%d/%d
-										  """, addedTick, m_TotalTicks, m_CurrentTicks, m_SeasonTrackerId, m_Day, m_Month, m_Year));
+		Seasons.LOGGER.info(String.format(
+             """
+			*** Season Debug Info ***
+			\tAddedTicks = %d
+			\tTotalTicks = %d
+			\tCurrentTicks = %d
+			\tDate = %d / %d / %d
+			\tSeasonTrackerId = %d
+			\tDaysInCurrentSeason = %d
+			""", addedTick, m_TotalTicks, m_CurrentTicks, m_Day, m_Month, m_Year, m_SeasonTrackerId, m_DaysInCurrentSeason));
 	}
 
 	private boolean isClient()
 	{
-		return Seasons.Instance.getServer().getOverworld().isClient;
+		return Seasons.Instance.getOverWorld().isEmpty() || Seasons.Instance.getOverWorld().get().isClient;
 	}
 
 }

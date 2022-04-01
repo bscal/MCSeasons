@@ -29,8 +29,6 @@ dependencies {
 
     errorprone("com.google.errorprone:error_prone_core:${project.errorproneVersion}")
 
-    modImplementation(include("com.oroarmor:oro-config-fabric:${project.oro_config_version}"))
-
     modImplementation(include("org.spongepowered:configurate-hocon:4.0.0"))
 }
 

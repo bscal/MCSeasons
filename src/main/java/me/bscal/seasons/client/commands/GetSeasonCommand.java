@@ -15,9 +15,9 @@ public class GetSeasonCommand implements Command<FabricClientCommandSource>, Cli
 	@Override
 	public int run(CommandContext<FabricClientCommandSource> context)
 	{
-		var season = SeasonTimer.GetOrCreate().getGenericSeason();
-		var seasonId = SeasonTimer.GetOrCreate().getInternalSeasonId();
-		var date = SeasonTimer.GetOrCreate().getDate();
+		var season = SeasonTimer.getOrCreate().getGenericSeason();
+		var seasonId = SeasonTimer.getOrCreate().getInternalSeasonId();
+		var date = SeasonTimer.getOrCreate().getDate();
 		MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(String.format("Season: %s, SeasonId: %d, Date: %s", season, seasonId, date)));
 		return 0;
 	}
@@ -25,6 +25,8 @@ public class GetSeasonCommand implements Command<FabricClientCommandSource>, Cli
 	@Override
 	public LiteralArgumentBuilder<FabricClientCommandSource> register()
 	{
-		return literal("seasoninfo").executes(this);
+		return literal("seasoninfo")
+				.requires(src -> src.hasPermissionLevel(4))
+				.executes(this);
 	}
 }

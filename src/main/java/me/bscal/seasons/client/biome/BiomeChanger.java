@@ -1,7 +1,8 @@
 package me.bscal.seasons.client.biome;
 
 import me.bscal.seasons.api.SeasonAPI;
-import me.bscal.seasons.client.ClientConfig;
+import me.bscal.seasons.client.SeasonsClient;
+import me.bscal.seasons.common.Config;
 import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import me.bscal.seasons.common.utils.Color;
@@ -54,23 +55,23 @@ import net.minecraft.world.biome.Biome;
 	{
 		if (GrassColors == null)
 			return ERROR_PINK; // Safety check because these arrays should never be null
-		if (SeasonTimer.GetOrCreate().getInternalSeasonId() >= GrassColors.length)
+		if (SeasonTimer.getOrCreate().getInternalSeasonId() >= GrassColors.length)
 			return DefaultColor; // If the array doesnt contain the season id use the default color
-		return GrassColors[SeasonTimer.GetOrCreate().getInternalSeasonId()];
+		return GrassColors[SeasonTimer.getOrCreate().getInternalSeasonId()];
 	}
 
 	public int getFoliageColor()
 	{
 		if (FoliageColor == null)
 			return ERROR_PINK; // Safety check because these arrays should never be null
-		if (SeasonTimer.GetOrCreate().getInternalSeasonId() >= FoliageColor.length)
+		if (SeasonTimer.getOrCreate().getInternalSeasonId() >= FoliageColor.length)
 			return DefaultColor; // If the array doesnt contain the season id use the default color
-		return FoliageColor[SeasonTimer.GetOrCreate().getInternalSeasonId()];
+		return FoliageColor[SeasonTimer.getOrCreate().getInternalSeasonId()];
 	}
 
 	public int getFallLeavesColor(int x, int y)
 	{
-		if (ClientConfig.Root.EnableFallColors.getValue() && SeasonAPI.getSeason() == Season.Autumn)
+		if (SeasonsClient.ClientConfig.Settings.EnableFallColors && SeasonAPI.getSeason() == Season.Autumn)
 			return getRandomFallColor(x, y);
 		return getFoliageColor();
 	}
@@ -78,7 +79,7 @@ import net.minecraft.world.biome.Biome;
 	public int getRandomFallColor(int x, int y)
 	{
 		int index;
-		if (ClientConfig.Root.GraphicsLevel.getValue() == ClientConfig.SeasonsGraphicsLevel.Fancy)
+		if (SeasonsClient.ClientConfig.Settings.GraphicsLevel == Config.SeasonsGraphicsLevel.Fancy)
 		{
 			float val = Noise.GetNoise(x, y);
 			if (val < -.5f)
@@ -90,7 +91,7 @@ import net.minecraft.world.biome.Biome;
 			else
 				index = 0;
 		}
-		else if (ClientConfig.Root.GraphicsLevel.getValue() == ClientConfig.SeasonsGraphicsLevel.Fast)
+		else if (SeasonsClient.ClientConfig.Settings.GraphicsLevel == Config.SeasonsGraphicsLevel.Fast)
 			index = ((x + y) / 16) % FallLeaves.length;
 		else
 			index = 0;

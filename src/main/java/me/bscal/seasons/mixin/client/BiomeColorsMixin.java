@@ -1,7 +1,7 @@
 package me.bscal.seasons.mixin.client;
 
-import me.bscal.seasons.client.ClientConfig;
 import me.bscal.seasons.client.SeasonsClient;
+import me.bscal.seasons.common.Config;
 import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.minecraft.client.color.world.BiomeColors;
@@ -38,7 +38,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 	private static int FoliageColorOverride(Biome biome, double x, double y)
 	{
-		if (ClientConfig.Root.GraphicsLevel.getValue() != ClientConfig.SeasonsGraphicsLevel.Disabled && SeasonTimer.GetOrCreate()
+		if (SeasonsClient.ClientConfig.Settings.GraphicsLevel != Config.SeasonsGraphicsLevel.Disabled && SeasonTimer.getOrCreate()
 				.getGenericSeason() == Season.Autumn)
 		{
 			return SeasonsClient.SeasonHandler.getChanger(biome).getRandomFallColor((int) x, (int) y);

@@ -1,6 +1,6 @@
 package me.bscal.seasons.mixin.client.block;
 
-import me.bscal.seasons.client.ClientConfig;
+import me.bscal.seasons.client.SeasonsClient;
 import me.bscal.seasons.client.particles.FallingLeavesParticle;
 import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
@@ -23,10 +23,10 @@ import java.util.Random;
 	@Inject(method = "randomDisplayTick", at = @At(value = "HEAD"))
 	public void OnRandomDisplayTick(BlockState state, World world, BlockPos pos, Random random, CallbackInfo ci)
 	{
-		int leafFallDist = ClientConfig.Root.LeafFallDistance.getValue();
+		int leafFallDist = SeasonsClient.ClientConfig.Settings.LeafFallDistance;
 		if (leafFallDist > 0 && pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), leafFallDist))
 		{
-			int bound = SeasonTimer.GetOrCreate().getGenericSeason() == Season.Autumn ? 32 : 96;
+			int bound = SeasonTimer.getOrCreate().getGenericSeason() == Season.Autumn ? 32 : 96;
 
 			if (world.isRaining())
 				bound -= 8;

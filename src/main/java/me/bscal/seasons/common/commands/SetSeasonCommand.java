@@ -18,13 +18,17 @@ public class SetSeasonCommand implements Command<ServerCommandSource>, CommandRe
 	@Override
 	public int run(CommandContext<ServerCommandSource> ctx)
 	{
-		SeasonTimer.GetOrCreate().setSeason(ctx.getArgument(SEASON_ARG, int.class));
+		SeasonTimer.getOrCreate().setSeason(ctx.getArgument(SEASON_ARG, int.class));
 		return 0;
 	}
 
 	@Override
 	public void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated)
 	{
-		dispatcher.register(literal("seasons").then(literal("set").then(argument(SEASON_ARG, IntegerArgumentType.integer(0, 3)).executes(this))));
+		dispatcher.register(literal("seasons")
+				.then(literal("set")
+						.requires(src -> src.hasPermissionLevel(4))
+						.then(argument(SEASON_ARG, IntegerArgumentType.integer(0, 3))
+								.executes(this))));
 	}
 }

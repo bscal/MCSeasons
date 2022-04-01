@@ -36,6 +36,7 @@ public class DebugCommand implements Command<ServerCommandSource>, CommandRegist
 	{
 		dispatcher.register(literal("seasons")
 				.then(literal("debug")
+						.requires(src -> src.hasPermissionLevel(4))
 						.then(literal("setlevel")
 								.then(argument("level", IntegerArgumentType.integer(0, 2))
 										.executes(this)))));

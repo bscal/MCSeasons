@@ -1,5 +1,6 @@
 package me.bscal.seasons.api;
 
+import me.bscal.seasons.Seasons;
 import me.bscal.seasons.common.seasons.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
@@ -48,6 +49,7 @@ public final class SeasonAPI
 
 	public static SeasonalType getSeasonalType(Biome biome, World world)
 	{
+		if (biome == null || world == null) return SeasonalType.FourSeasonPerYear;
 		var biomeKey = world.getRegistryManager().get(Registry.BIOME_KEY).getKey(biome);
 		return biomeKey.isPresent() ?  BiomeToSeasonMapper.getSeasonalType(biomeKey.get().getValue()) : SeasonalType.FourSeasonPerYear;
 	}
@@ -58,6 +60,11 @@ public final class SeasonAPI
 	}
 
 	public static long getTimeOfDay()
+	{
+		return SeasonTimer.getOrCreate().getCurrentTicks() % Seasons.ServerConfig.Settings.TicksPerDay;
+	}
+
+	public static long getCurrentTick()
 	{
 		return SeasonTimer.getOrCreate().getCurrentTicks();
 	}

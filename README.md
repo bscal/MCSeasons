@@ -1,22 +1,54 @@
 ## MCSeasons
-Minecraft 1.18 Fabric mod that add seasons to the game.
+Minecraft 1.18-1.18.2 Fabric mod that adds different seasons to the game.
+<br><br>
 
-## Gameplay
+### Gameplay
+Default there are 4 seasons per year (Spring, Summer, Autumn, Winter).<br>
+However seasons can be customized and each biome can have a different group of seasons.
+For example: (Wet, Wet, Dry, Dry) for a jungle biome.
+
+Time is tracked through in-game time. So `/time set|add` works correctly.
+
+Seasons how their own effects and colors.
+* Spring is brighter
+* Summer is default colors
+* Autumn is browner and leaves are multicolored
+* Winter is a gray washed greed
+
+Leaves fall from leaves, dynamic with seasons and weather
+
+Contains a small API and config files to edit and hook into the mod.
+
 Seasons are tied to minecraft time. Different seasons types per biome.
-Default is 4 seasons per year (Spring, Summer, Autumn, Winter). 
-Values are customizable.
 
-More too come.
+There is only 1 global clock based off the Overworld.
 
 ## Usage
-TODO
+####Commands
 
-### Developer
-I documented much yet but if you look at SeasonAPI class you can see most functionality.
+    /seasonsc info                  - Prints season and date in chat
+    /seasons debug setlevel [0-2]   - Sets debug info (0 - off, 1 - info, 2 - verbose)
+    /seasons set [0-3]              - Sets the season (0 - autumn ... 3 - winter)
+     
+    You can use minecraft's /time command to adjust time
 
-Some notes:
-* Seasons are based on only the Overworld
+## Developer
+
+#### Install
+```
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    modImplementation("com.github.bscal:MCSeasons:Tag")
+}
+```
+
+### Notes
+* Looking at the `SeasonsAPI` file show most commonly needed functions.
 * Seasons are tracked by an internal id.
-* See SeasonTypes for see possible types of seasons
-* Seasons are based on biome, however by default biomes will use 4 seasons per year
-* Time is tracked server side and is synced to clients
+* Seasons and SeasonalType are enums containing info on what season it is.
+* Time is tracked server side and synced to clients
+* Time is based off the Overworld.
+

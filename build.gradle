@@ -80,29 +80,7 @@ allprojects {
         }
     }
 
-
-
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-
-            groupId project.group
-            artifactId project.name
-            version project.version
-            from components.java
-        }
-    }
-}
-
-subprojects {
+    // configure the maven publication
     publishing {
         publications {
             mavenJava(MavenPublication) {
@@ -110,7 +88,24 @@ subprojects {
                 artifactId project.name
                 version project.version
                 from components.java
+
+                artifact(remapJar) {
+                    builtBy remapJar
+                }
+                artifact(sourcesJar) {
+                    builtBy remapSourcesJar
+                }
             }
+        }
+
+
+
+        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+        repositories {
+            // Add repositories to publish to here.
+            // Notice: This block does NOT have the same function as the block in the top level.
+            // The repositories here will be used for publishing your artifact, not for
+            // retrieving dependencies.
         }
     }
 }

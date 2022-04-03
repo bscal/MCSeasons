@@ -9,7 +9,7 @@ apply plugin: 'java'
 archivesBaseName = rootProject.archives_base_name + "_api"
 
 dependencies {
-    implementation(rootProject)
+    implementation project(path: rootProject.path, configuration: "namedElements")
 }
 
 test {

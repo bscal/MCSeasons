@@ -1,16 +1,14 @@
-package me.bscal.seasons.api;
-
 import me.bscal.seasons.Seasons;
 import me.bscal.seasons.common.seasons.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public final class SeasonAPI
 {
+
 	public static Identifier getBiomeId(Biome biome, World world)
 	{
 		return world.getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
@@ -23,19 +21,12 @@ public final class SeasonAPI
 
 	public static Season getSeasonByBiome(Entity entity)
 	{
-		var biome = entity.world.getBiome(entity.getBlockPos());
-		return getSeasonByBiome(biome.value());
+		return getSeasonByBiome(entity.world.getBiome(entity.getBlockPos()).value());
 	}
 
-	public static Season getSeasonByBiome(Biome Biome)
+	public static Season getSeasonByBiome(Biome biome)
 	{
-		return SeasonTimer.getOrCreate().getSeason(Biome);
-	}
-
-	public static Season getSeasonByBiome(Biome biome, World world)
-	{
-		//var biomeKey = world.getRegistryManager().get(Registry.BIOME_KEY).getKey(biome);
-		return getSeasonByBiome(biome);
+		return SeasonTimer.getOrCreate().getSeason(biome);
 	}
 
 	public static SeasonType getSeasonType(Biome biome)
@@ -43,12 +34,6 @@ public final class SeasonAPI
 		return BiomeToSeasonMapper.getSeasonalType(biome);
 	}
 
-	public static SeasonType getSeasonType(Biome biome, World world)
-	{
-		if (biome == null || world == null) return SeasonType.FourSeasonPerYear;
-		var biomeKey = world.getRegistryManager().get(Registry.BIOME_KEY).getKey(biome);
-		return biomeKey.isPresent() ?  BiomeToSeasonMapper.getSeasonalType(biome) : SeasonType.FourSeasonPerYear;
-	}
 
 	public static SeasonDate getDate()
 	{

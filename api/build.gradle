@@ -1,0 +1,15 @@
+plugins {
+    id 'fabric-loom'
+    id 'maven-publish'
+    id 'net.ltgt.errorprone'
+}
+
+archivesBaseName = rootProject.archives_base_name + "_API"
+
+dependencies {
+    implementation(rootProject)
+}
+
+test {
+    //useJUnitPlatform()
+}

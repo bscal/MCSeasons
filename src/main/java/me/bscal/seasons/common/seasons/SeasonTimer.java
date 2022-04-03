@@ -11,6 +11,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.PersistentState;
+import net.minecraft.world.biome.Biome;
 import org.apache.logging.log4j.Level;
 
 import java.util.Optional;
@@ -104,9 +105,9 @@ public class SeasonTimer extends PersistentState
 		return SeasonType.FourSeasonPerYear.getSeason(m_InternalSeasonId);
 	}
 
-	public Season getSeason(Identifier biomeId)
+	public Season getSeason(Biome biome)
 	{
-		return BiomeToSeasonMapper.getSeasonalType(biomeId).getSeason(m_InternalSeasonId);
+		return BiomeToSeasonMapper.getSeasonalType(biome).getSeason(m_InternalSeasonId);
 	}
 
 	public void setSeason(int seasonTrackerId)

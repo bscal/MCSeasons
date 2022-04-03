@@ -20,9 +20,9 @@ public final class BiomeToSeasonMapper
 		BiomesToSeason.put(biome, seasonType);
 	}
 
-	public static SeasonType getSeasonalType(Identifier id)
+	public static SeasonType getSeasonalType(Biome biome)
 	{
-		return BiomesToSeason.getOrDefault(id, SeasonType.FourSeasonPerYear);
+		return BiomesToSeason.getOrDefault(biome, SeasonType.FourSeasonPerYear);
 	}
 
 }

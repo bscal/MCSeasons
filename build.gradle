@@ -19,7 +19,7 @@ allprojects {
     apply plugin: 'maven-publish'
     apply plugin: "fabric-loom"
     apply plugin: "net.ltgt.errorprone"
-
+    apply plugin: "java"
 
     version = project.mod_version
     group = project.maven_group

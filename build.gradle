@@ -88,6 +88,13 @@ allprojects {
                 artifactId project.name
                 version project.version
                 from components.java
+
+                artifact(remapJar) {
+                    builtBy remapJar
+                }
+                artifact(sourcesJar) {
+                    builtBy remapSourcesJar
+                }
             }
         }
     }

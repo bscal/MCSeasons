@@ -15,29 +15,14 @@ java {
     archivesBaseName = project.archives_base_name
 }
 
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
-    }
-}
-
-def moduleDependencies(project, List<String> depNames) {
-    def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
-    project.dependencies {
-        deps.each {
-            api it
-        }
-    }
-}
-
 allprojects {
     apply plugin: 'maven-publish'
     apply plugin: "fabric-loom"
     apply plugin: "net.ltgt.errorprone"
 
 
-    version = rootProject.mod_version
-    group = rootProject.maven_group
+    version = project.mod_version
+    group = project.maven_group
 
     repositories {
         // Add repositories to retrieve artifacts from in here.
@@ -50,20 +35,11 @@ allprojects {
 
     dependencies {
         // To change the versions see the gradle.properties file
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
-        modImplementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
-        modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
-        errorprone("com.google.errorprone:error_prone_core:${rootProject.errorproneVersion}")
-    }
-
-    processResources {
-        inputs.property "version", project.version
-        filteringCharset "UTF-8"
-
-        filesMatching("fabric.mod.json") {
-            expand "version": project.version
-        }
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+        errorprone("com.google.errorprone:error_prone_core:${project.errorproneVersion}")
     }
 
     def targetJavaVersion = 17
@@ -98,6 +74,12 @@ allprojects {
         }
     }
 
+    jar {
+        from("LICENSE") {
+            rename { "${it}_${project.archivesBaseName}" }
+        }
+    }
+
     // configure the maven publication
     publishing {
         publications {
@@ -109,4 +91,8 @@ allprojects {
             }
         }
     }
+}
+
+subprojects {
+
 }

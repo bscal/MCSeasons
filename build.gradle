@@ -106,12 +106,10 @@ subprojects {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                artifact(remapJar) {
-                    builtBy remapJar
-                }
-                artifact(sourcesJar) {
-                    builtBy remapSourcesJar
-                }
+                groupId project.group
+                artifactId project.name
+                version project.version
+                from components.java
             }
         }
     }

@@ -4,14 +4,36 @@ plugins {
     id 'net.ltgt.errorprone'
 }
 
-apply plugin: 'java'
-
 archivesBaseName = rootProject.archives_base_name + "_api"
 
+apply plugin: 'java'
+
 dependencies {
-    implementation project(path: rootProject.path, configuration: "namedElements")
+    //to change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation(rootProject)
 }
 
-test {
-    //useJUnitPlatform()
+// configure the maven publication
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // add all the jars that should be included when publishing to maven
+            artifact(remapJar) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+        }
+    }
+
+    // select the repositories you want to publish to
+    repositories {
+        // uncomment to publish to the local maven
+        // mavenLocal()
+    }
 }

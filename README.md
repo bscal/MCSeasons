@@ -25,6 +25,10 @@ Seasons are tied to minecraft time. Different seasons types per biome.
 There is only 1 global clock based off the Overworld.
 
 ## Usage
+#### Install
+
+Place `Seasons.jar` into your mods folder.
+
 ####Commands
 
     /seasonsc info                  - Prints season and date in chat
@@ -34,22 +38,29 @@ There is only 1 global clock based off the Overworld.
     You can use minecraft's /time command to adjust time
 
 ## Developer
-
 #### Install
+To include the API use:
 ```
 repositories {
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
+    api(include("com.github.bscal.MCSeasons:api:Tag"))
+}
+```
+
+If you'd you like to extend Seasons:
+```
+dependencies {
     modImplementation("com.github.bscal:MCSeasons:Tag")
 }
 ```
 
 ### Notes
-* Looking at the `SeasonsAPI` file show most commonly needed functions.
+* Looking at the `SeasonAPI` file show most commonly needed functions.
 * Seasons are tracked by an internal id.
 * Seasons and SeasonalType are enums containing info on what season it is.
 * Time is tracked server side and synced to clients
-* Time is based off the Overworld.
-
+* Time is based off the Overworld only
+* Seasons is a bit unfinished, so it could change, but SeasonAPI should make it more reliable to use.

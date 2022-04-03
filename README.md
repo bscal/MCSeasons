@@ -1,4 +1,5 @@
-## MCSeasons
+[![](https://jitpack.io/v/bscal/MCSeasons.svg)](https://jitpack.io/#bscal/MCSeasons)
+### MCSeasons
 Minecraft 1.18-1.18.2 Fabric mod that adds different seasons to the game.
 <br><br>
 

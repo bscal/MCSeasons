@@ -42,16 +42,16 @@ public final class SeasonAPI
 		return biomeKey.isPresent() ? getSeasonByBiome(biomeKey.get().getValue()) : getSeason();
 	}
 
-	public static SeasonalType getSeasonalType(Identifier biomeId)
+	public static SeasonType getSeasonType(Identifier biomeId)
 	{
 		return BiomeToSeasonMapper.getSeasonalType(biomeId);
 	}
 
-	public static SeasonalType getSeasonalType(Biome biome, World world)
+	public static SeasonType getSeasonType(Biome biome, World world)
 	{
-		if (biome == null || world == null) return SeasonalType.FourSeasonPerYear;
+		if (biome == null || world == null) return SeasonType.FourSeasonPerYear;
 		var biomeKey = world.getRegistryManager().get(Registry.BIOME_KEY).getKey(biome);
-		return biomeKey.isPresent() ?  BiomeToSeasonMapper.getSeasonalType(biomeKey.get().getValue()) : SeasonalType.FourSeasonPerYear;
+		return biomeKey.isPresent() ?  BiomeToSeasonMapper.getSeasonalType(biomeKey.get().getValue()) : SeasonType.FourSeasonPerYear;
 	}
 
 	public static SeasonDate getDate()

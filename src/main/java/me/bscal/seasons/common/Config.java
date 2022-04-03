@@ -1,7 +1,7 @@
 package me.bscal.seasons.common;
 
 import me.bscal.seasons.Seasons;
-import me.bscal.seasons.common.seasons.SeasonalType;
+import me.bscal.seasons.common.seasons.SeasonType;
 import me.bscal.seasons.common.utils.IdentifierSerializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
@@ -95,10 +95,8 @@ public class Config<T>
 		public int MonthsPerYear = 12;
 		@Setting("DaysPerSeason") @Comment("30 days = 10 irl hours per season")
 		public int DaysPerSeason = 40;
-		@Setting("MaxSeasons")
-		public int MaxSeasons = 4;
 		@Setting("BiomeToSeasonTypeOverrides")
-		public Map<Identifier, SeasonalType> BiomeToSeasonTypeOverrides;
+		public Map<Identifier, SeasonType> BiomeToSeasonTypeOverrides;
 	}
 
 	@ConfigSerializable public static class ClientSettings

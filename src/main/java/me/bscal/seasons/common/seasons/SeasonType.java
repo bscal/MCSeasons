@@ -1,13 +1,12 @@
 package me.bscal.seasons.common.seasons;
 
 import com.google.common.collect.ImmutableList;
-import it.unimi.dsi.fastutil.objects.ObjectImmutableList;
 
 /**
  * Enum that contains data on how a biome should handle itself depending on what the internal seasonal id it is.
  * For example: 0 = Spring, 1 = Summer, 2 = Fall
  */
-public enum SeasonalType
+public enum SeasonType
 {
 	FourSeasonPerYear(ImmutableList.of(Season.Spring, Season.Summer, Season.Autumn, Season.Winter)),
 	TropicalSeason(ImmutableList.of(Season.Wet, Season.Wet, Season.Dry, Season.Dry)),
@@ -16,9 +15,8 @@ public enum SeasonalType
 
 	public final ImmutableList<Season> Seasons;
 
-	SeasonalType(ImmutableList<Season> seasonalSections)
+	SeasonType(ImmutableList<Season> seasonalSections)
 	{
-
 		Seasons = seasonalSections;
 	}
 

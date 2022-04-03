@@ -11,6 +11,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.PersistentState;
+import org.apache.logging.log4j.Level;
 
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ public class SeasonTimer extends PersistentState
 
 	public static final Identifier CHANNEL_NAME = new Identifier(Seasons.MOD_ID, "season_sync");
 	public static final String STATE_NAME = Seasons.MOD_ID + ":season_timer";
+	public static final int MAX_SEASON_ID = 3;
 	private static final int SIZE_OF = 24;
 
 	private long m_TotalTicks, m_CurrentTicks;
@@ -99,7 +101,7 @@ public class SeasonTimer extends PersistentState
 
 	public Season getGenericSeason()
 	{
-		return SeasonalType.FourSeasonPerYear.getSeason(m_InternalSeasonId);
+		return SeasonType.FourSeasonPerYear.getSeason(m_InternalSeasonId);
 	}
 
 	public Season getSeason(Identifier biomeId)
@@ -109,7 +111,7 @@ public class SeasonTimer extends PersistentState
 
 	public void setSeason(int seasonTrackerId)
 	{
-		m_InternalSeasonId = MathHelper.clamp(seasonTrackerId, 0, Seasons.ServerConfig.Settings.MaxSeasons - 1);
+		m_InternalSeasonId = MathHelper.clamp(seasonTrackerId, 0, MAX_SEASON_ID);
 		m_DaysInCurrentSeason = 0;
 		m_SeasonChanged = true;
 		sendToClients();
@@ -186,24 +188,28 @@ public class SeasonTimer extends PersistentState
 		{
 			m_DaysInCurrentSeason = 0;
 			int newSeasonId = m_InternalSeasonId + 1;
-			if (newSeasonId >= Seasons.ServerConfig.Settings.MaxSeasons) newSeasonId = 0;
+			if (newSeasonId > MAX_SEASON_ID) newSeasonId = 0;
 			setSeason(newSeasonId);
 		}
 	}
 
 	private void logDebug(long addedTick)
 	{
-		Seasons.LOGGER.info(String.format(
-             """
-			*** Season Debug Info ***
-			\tAddedTicks = %d
-			\tTotalTicks = %d
-			\tCurrentTicks = %d
-			\tDays = %d
-			\tDate = %s
-			\tInternalSeasonId = %d
-			\tDaysInCurrentSeason = %d
-			""", addedTick, m_TotalTicks, m_CurrentTicks, m_Day, getDate(), m_InternalSeasonId, m_DaysInCurrentSeason));
+		if (Seasons.LOGGER.getLevel() == Level.INFO)
+		{
+			Seasons.LOGGER.info(String.format(
+					"""
+				   *** Season Debug Info ***
+				   \tAddedTicks = %d
+				   \tTotalTicks = %d
+				   \tCurrentTicks = %d
+				   \tDays = %d
+				   \tDate = %s
+				   \tInternalSeasonId = %d
+				   \tDaysInCurrentSeason = %d
+				   """, addedTick, m_TotalTicks, m_CurrentTicks, m_Day, getDate(), m_InternalSeasonId, m_DaysInCurrentSeason));
+		}
+
 	}
 
 	private boolean isClient()

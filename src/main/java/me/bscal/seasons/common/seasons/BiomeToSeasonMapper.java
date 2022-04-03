@@ -1,21 +1,28 @@
 package me.bscal.seasons.common.seasons;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.world.biome.Biome;
 
-public class BiomeToSeasonMapper
+public final class BiomeToSeasonMapper
 {
 
-	public static final Object2ObjectOpenHashMap<Identifier, SeasonalType> BiomesToSeason;
+	public static final Reference2ObjectOpenHashMap<Biome, SeasonType> BiomesToSeason = new Reference2ObjectOpenHashMap<>();
 
 	static
 	{
-		BiomesToSeason = new Object2ObjectOpenHashMap<>();
+		register(BuiltinRegistries.BIOME.get(new Identifier("jungle")), SeasonType.TropicalSeason);
 	}
 
-	public static SeasonalType getSeasonalType(Identifier id)
+	public static void register(Biome biome, SeasonType seasonType)
 	{
-		return BiomesToSeason.getOrDefault(id, SeasonalType.FourSeasonPerYear);
+		BiomesToSeason.put(biome, seasonType);
+	}
+
+	public static SeasonType getSeasonalType(Identifier id)
+	{
+		return BiomesToSeason.getOrDefault(id, SeasonType.FourSeasonPerYear);
 	}
 
 }

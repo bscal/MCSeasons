@@ -54,7 +54,7 @@ allprojects {
         }
 
         // set true to enable errorprone
-        options.errorprone.enabled = true
+        options.errorprone.enabled = false
         options.errorprone.excludedPaths = ".*/FastNoiseLite.*"
     }
 
@@ -79,39 +79,20 @@ allprojects {
             rename { "${it}_${project.archivesBaseName}" }
         }
     }
-
-
 }
 
 subprojects {
-    // configure the maven publication
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                groupId project.group
-                artifactId project.name
-                version project.version
-                from components.java
-
                 artifact(remapJar) {
                     builtBy remapJar
                 }
                 artifact(sourcesJar) {
                     builtBy remapSourcesJar
                 }
-            }
-        }
-    }
-}
 
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId project.group
-            artifactId project.name
-            version project.version
-            from components.java
+            }
         }
     }
 }

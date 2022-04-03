@@ -1,4 +1,4 @@
-package me.bscal;
+package me.bscal.seasons.api;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;

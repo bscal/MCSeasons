@@ -1,6 +1,5 @@
 package me.bscal.seasons.client.biome;
 
-import me.bscal.seasons.api.SeasonAPI;
 import me.bscal.seasons.client.SeasonsClient;
 import me.bscal.seasons.common.Config;
 import me.bscal.seasons.common.seasons.Season;
@@ -71,7 +70,7 @@ import net.minecraft.world.biome.Biome;
 
 	public int getFallLeavesColor(int x, int y)
 	{
-		if (SeasonsClient.ClientConfig.Settings.EnableFallColors && SeasonAPI.getSeason() == Season.Autumn)
+		if (SeasonsClient.ClientConfig.Settings.EnableFallColors && SeasonTimer.getOrCreate().getGenericSeason() == Season.Autumn)
 			return getRandomFallColor(x, y);
 		return getFoliageColor();
 	}

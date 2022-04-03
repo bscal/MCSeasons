@@ -39,28 +39,20 @@ Place `Seasons.jar` into your mods folder.
 
 ## Developer
 #### Install
-To include the API use:
 ```
 repositories {
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    api(include("com.github.bscal.MCSeasons:api:Tag"))
+    modApi("com.github.bscal:MCSeasons:Tag"))
 }
 ```
 
-If you'd you like to extend Seasons:
-```
-dependencies {
-    modImplementation("com.github.bscal:MCSeasons:Tag")
-}
-```
+You can use classes `SeasonAPI` and `SeasonAPIUtils` for commonly used functions.
 
 ### Notes
-* Looking at the `SeasonAPI` file show most commonly needed functions.
 * Seasons are tracked by an internal id.
 * Seasons and SeasonalType are enums containing info on what season it is.
 * Time is tracked server side and synced to clients
 * Time is based off the Overworld only
-* Seasons is a bit unfinished, so it could change, but SeasonAPI should make it more reliable to use.

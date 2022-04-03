@@ -4,6 +4,11 @@ plugins {
     id 'net.ltgt.errorprone' version '2.0.2'
 }
 
+sourceSets {
+    rootProject
+    api
+}
+
 dependencies {
     // To change the versions see the gradle.properties file
     //minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -39,25 +44,6 @@ processResources {
 jar {
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}" }
-    }
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId = 'com.github.bscal'
-            artifactId = 'MCSeasons'
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
     }
 }
 
@@ -109,6 +95,26 @@ allprojects {
             if (JavaVersion.current() < javaVersion) {
                 toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
             }
+        }
+    }
+    \
+    // configure the maven publication
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+                from components.java
+            }
+        }
+
+        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+        repositories {
+            // Add repositories to publish to here.
+            // Notice: This block does NOT have the same function as the block in the top level.
+            // The repositories here will be used for publishing your artifact, not for
+            // retrieving dependencies.
         }
     }
 }

@@ -4,7 +4,9 @@ plugins {
     id 'net.ltgt.errorprone'
 }
 
-archivesBaseName = rootProject.archives_base_name + "_API"
+apply plugin: 'java'
+
+archivesBaseName = rootProject.archives_base_name + "_api"
 
 dependencies {
     implementation(rootProject)

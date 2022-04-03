@@ -1,3 +1,5 @@
+package me.bscal;
+
 import me.bscal.seasons.Seasons;
 import me.bscal.seasons.common.seasons.*;
 import net.minecraft.entity.Entity;

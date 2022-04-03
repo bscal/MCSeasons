@@ -25,11 +25,6 @@ dependencies {
 
 java {
     archivesBaseName = project.archives_base_name
-
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
 }
 
 processResources {
@@ -90,14 +85,16 @@ allprojects {
     }
 
     java {
-        java {
-            def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-            if (JavaVersion.current() < javaVersion) {
-                toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-            }
+        def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+        if (JavaVersion.current() < javaVersion) {
+            toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
         }
+        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+        // if it is present.
+        // If you remove this line, sources will not be generated.
+        withSourcesJar()
     }
-    \
+
     // configure the maven publication
     publishing {
         publications {

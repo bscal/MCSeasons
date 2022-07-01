@@ -3,14 +3,13 @@ package me.bscal.seasons.client.commands;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import me.bscal.seasons.api.SeasonAPI;
 import me.bscal.seasons.common.seasons.BiomeToSeasonMapper;
-import me.bscal.seasons.common.seasons.SeasonTimer;
-import me.bscal.seasons.common.seasons.SeasonType;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class GetSeasonCommand implements Command<FabricClientCommandSource>, ClientCommandRegistration
 {
@@ -20,13 +19,11 @@ public class GetSeasonCommand implements Command<FabricClientCommandSource>, Cli
 		var sender = context.getSource().getClient().player;
 		var world = context.getSource().getWorld();
 		var biome = (sender == null) ? null : world.getBiome(sender.getBlockPos()).value();
-		var seasonTime = SeasonTimer.getOrCreate();
-
-		var season = seasonTime.getSeason(biome);
-		var date = seasonTime.getDate();
-		var seasonType = BiomeToSeasonMapper.getSeasonalType(biome);
-
-		String msg = String.format("Season : %s (%s), Date: %s", season, seasonType, date);
+		var season = SeasonAPI.getSeason();
+		var currentTick = SeasonAPI.getCurrentTick();
+		var date = SeasonAPI.getDate();
+		var seasonType = BiomeToSeasonMapper.getSeasonType(biome);
+		String msg = String.format("Season : %s (%s), TickTime: %d, Date: %s", season, seasonType, currentTick, date);
 		MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(msg));
 		return 0;
 	}

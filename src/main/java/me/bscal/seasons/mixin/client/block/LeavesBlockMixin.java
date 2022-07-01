@@ -1,21 +1,20 @@
 package me.bscal.seasons.mixin.client.block;
 
+import me.bscal.seasons.api.SeasonAPI;
 import me.bscal.seasons.client.SeasonsClient;
 import me.bscal.seasons.client.particles.FallingLeavesParticle;
 import me.bscal.seasons.common.seasons.Season;
-import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Random;
 
 @Mixin(LeavesBlock.class) public class LeavesBlockMixin
 {
@@ -26,7 +25,7 @@ import java.util.Random;
 		int leafFallDist = SeasonsClient.ClientConfig.Settings.LeafFallDistance;
 		if (leafFallDist > 0 && pos.isWithinDistance(MinecraftClient.getInstance().player.getPos(), leafFallDist))
 		{
-			int bound = SeasonTimer.getOrCreate().getGenericSeason() == Season.Autumn ? 32 : 96;
+			int bound = SeasonAPI.getSeason() == Season.Autumn ? 32 : 96;
 
 			if (world.isRaining())
 				bound -= 8;

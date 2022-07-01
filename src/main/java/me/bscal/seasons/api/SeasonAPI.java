@@ -18,60 +18,51 @@ public final class SeasonAPI
 {
 
 	/**
-	 * Returns the global default season. Will always be Spring, Summer, Autumn, or Summer
+	 * Returns the current <code>Season</code>. Spring, Summer, Autumn, or Winter. <code>Season</code> is the global state, and can be used to find a
+	 * biomes current <code>SeasonType</code>. ie. jungle's Spring = Wet, plain's Winter = Winter
 	 */
 	public static Season getSeason()
 	{
-		return SeasonTimer.getOrCreate().getGenericSeason();
+		return Season.getSeason();
 	}
 
 	/**
-	 * Returns the seasons based on the biome.
+	 *	Returns a SeasonBiome containing info on climate for a biome. Will use <code>SeasonBiomeClimate.GENERIC</code> by default.
 	 */
-	public static Season getSeasonByBiome(Biome biome)
+	public static SeasonBiomeClimate getSeasonBiome(Biome biome)
 	{
-		Objects.requireNonNull(biome, "biome was null");
-		return SeasonTimer.getOrCreate().getSeason(biome);
+		return BiomeToSeasonMapper.BiomesToSeason.getOrDefault(biome, SeasonBiomeClimates.GENERIC);
 	}
 
-	public static Season getSeasonByEntity(Entity entity)
+	/**
+	 * Returns the <code>SeasonType</code> for a biome. All biomes represent a <code>Season</code> but can handle seasons different.
+	 * Jungles for instance could have: Wet, Wet, Dry, Dry as their seasons. Will use <code>SeasonBiomeClimate.GENERIC</code> by default.
+	 */
+	public static SeasonTypes getSeasonByBiome(Biome biome)
+	{
+		Objects.requireNonNull(biome, "biome was null");
+		return BiomeToSeasonMapper.getSeasonType(biome);
+	}
+
+	public static SeasonTypes getSeasonByEntity(Entity entity)
 	{
 		Objects.requireNonNull(entity, "entity must not be null");
 		return getSeasonByBiome(SeasonAPIUtils.getBiomeFromEntity(entity));
 	}
 
-	public static Season getSeasonById(Identifier id, World world)
+	public static SeasonTypes getSeasonById(Identifier id, World world)
 	{
 		Objects.requireNonNull(id, "id must not be null");
 		Objects.requireNonNull(world, "world must not be null");
 		var biome = SeasonAPIUtils.getBiomeFromId(id, world);
-		if (biome.isEmpty()) return getSeason();
+		if (biome.isEmpty()) return SeasonTypes.forGenericSeason();
 		return getSeasonByBiome(biome.get());
 	}
 
-	/**
-	 * Returns the SeasonType for the Biome. SeasonType specifies what seasons the biome has.
-	 * The default SeasonType is FourSeasonsPerYear
-	 */
-	public static SeasonType getSeasonType(Biome biome)
-	{
-		Objects.requireNonNull(biome, "biome was null");
-		return BiomeToSeasonMapper.getSeasonalType(biome);
-	}
-
-	/**
-	 * Returns the current date
-	 */
 	public static SeasonDate getDate()
 	{
 		return SeasonTimer.getOrCreate().getDate();
 	}
-
-/*	public static void setDate(SeasonDate date)
-	{
-		Objects.requireNonNull(date, "date must not be null");
-		SeasonTimer.getOrCreate().setDate(data);
-	}*/
 
 	/**
 	 * Returns the time of day based upon season time.
@@ -117,37 +108,28 @@ public final class SeasonAPI
 	}
 
 	/**
-	 * seasonTrackerId will be clamped
-	 */
-	public static void setSeason(int seasonTrackerId)
-	{
-		SeasonTimer.getOrCreate().setSeason(seasonTrackerId);
-	}
-
-	/**
 	 * A naive approach to settings the season based on Season. Only Spring, Summer, Autumn, and Winter will change the season
 	 */
 	public static void setSeason(Season season)
 	{
 		Objects.requireNonNull(season, "season is null");
-
-		int newSeasonId;
-		switch (season)
-		{
-		case Spring -> newSeasonId = 0;
-		case Summer -> newSeasonId = 1;
-		case Autumn -> newSeasonId = 2;
-		case Winter -> newSeasonId = 3;
-		default -> {
-			return;
-		}
-		}
-		setSeason(newSeasonId);
+		SeasonTimer.getOrCreate().setSeason(season.ordinal());
 	}
 
-	public static int getInternalSeasonId()
+	/**
+	 * Adds a Biome to SeasonBiome entry into BiomeToSeasonMapper
+	 * @param shouldOverride - Should entry replace an existing entry.
+	 * @return - true if added
+	 */
+	public static boolean registerBiomeWithSeasons(Biome biome, SeasonBiomeClimate seasonBiome, boolean shouldOverride)
 	{
-		return SeasonTimer.getOrCreate().getInternalSeasonId();
-	}
+		Objects.requireNonNull(biome, "biome cannot be null.");
+		Objects.requireNonNull(seasonBiome, "seasonBiome cannot be null.");
 
+		if (!shouldOverride)
+			return BiomeToSeasonMapper.BiomesToSeason.putIfAbsent(biome, seasonBiome) == null;
+
+		BiomeToSeasonMapper.register(biome, seasonBiome);
+		return true;
+	}
 }

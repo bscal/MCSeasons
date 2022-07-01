@@ -1,5 +1,6 @@
 package me.bscal.seasons.mixin.client;
 
+import me.bscal.seasons.api.SeasonAPI;
 import me.bscal.seasons.client.SeasonsClient;
 import me.bscal.seasons.client.biome.BiomeChanger;
 import me.bscal.seasons.common.seasons.Season;
@@ -23,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 		BiomeChanger changer = SeasonsClient.SeasonHandler.ChangerMap.get(BiomeKeys.BIRCH_FOREST.getValue());
 		if (changer != null)
 		{
-			if (SeasonsClient.ClientConfig.Settings.EnableFallColors && SeasonTimer.getOrCreate().getGenericSeason() == Season.Autumn)
+			if (SeasonsClient.ClientConfig.Settings.EnableFallColors && SeasonAPI.getSeason() == Season.Autumn)
 				cir.setReturnValue(FALL_BIRCH_COLOR);
 			else
 				cir.setReturnValue(changer.getFoliageColor());

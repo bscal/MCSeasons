@@ -1,5 +1,6 @@
 package me.bscal.seasons.mixin.client;
 
+import me.bscal.seasons.api.SeasonAPI;
 import me.bscal.seasons.client.SeasonsClient;
 import me.bscal.seasons.common.Config;
 import me.bscal.seasons.common.seasons.Season;
@@ -38,8 +39,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 	private static int FoliageColorOverride(Biome biome, double x, double y)
 	{
-		if (SeasonsClient.ClientConfig.Settings.GraphicsLevel != Config.SeasonsGraphicsLevel.Disabled && SeasonTimer.getOrCreate()
-				.getGenericSeason() == Season.Autumn)
+		if (SeasonsClient.ClientConfig.Settings.GraphicsLevel != Config.SeasonsGraphicsLevel.Disabled && SeasonAPI.getSeason() == Season.Autumn)
 		{
 			return SeasonsClient.SeasonHandler.getChanger(biome).getRandomFallColor((int) x, (int) y);
 		}

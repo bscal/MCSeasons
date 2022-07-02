@@ -45,4 +45,14 @@ public class SeasonStats
         WindRate = stats0.WindRate + stats1.WindRate;
     }
 
+    public void zero()
+    {
+        Temperature = 0;
+        DayTemperature = 0;
+        NightTemperature = 0;
+        Humidity = 0;
+        Rainfall = 0;
+        Sunlight = 0;
+        WindRate = 0;
+    }
 }

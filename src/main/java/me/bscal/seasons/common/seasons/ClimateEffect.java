@@ -3,17 +3,19 @@ package me.bscal.seasons.common.seasons;
 public interface ClimateEffect
 {
 
-    void processEffect(SeasonalModifiers modifiers, SeasonBiomeClimate climate, Season season);
+    boolean processEffect(SeasonWorld seasonWorld, Season season);
 
-    public static final ClimateEffect MILD = new ClimateEffect()
+    ClimateEffectType getType();
+
+    default boolean ofCategory(ClimateEffectCategory category)
     {
-        @Override
-        public void processEffect(SeasonalModifiers modifiers, SeasonBiomeClimate climate, Season season)
-        {
+        return getType().Category == category;
+    }
 
-        }
-    };
-
-
+    default boolean sameTypeOrCategory(SeasonWorld seasonWorld)
+    {
+        var type = getType();
+        return seasonWorld.ActiveEffects.contains(type) || seasonWorld.ActiveCategories.contains(type.Category);
+    }
 
 }

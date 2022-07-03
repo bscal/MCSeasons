@@ -6,21 +6,14 @@ import me.bscal.seasons.common.commands.SetSeasonCommand;
 import me.bscal.seasons.common.seasons.SeasonClimateManager;
 import me.bscal.seasons.common.seasons.SeasonStatsGlobals;
 import me.bscal.seasons.common.seasons.SeasonTimer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.random.Random;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
-
-import java.util.Objects;
-import java.util.Optional;
 
 public class Seasons implements ModInitializer
 {
@@ -57,7 +50,7 @@ public class Seasons implements ModInitializer
 
     public MinecraftServer getServer()
     {
-        assert m_Server != null: "m_Server must not be null. Are you calling getServer() from client?";
+        assert m_Server != null : "m_Server must not be null. Are you calling getServer() from client?";
         return m_Server;
     }
 }

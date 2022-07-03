@@ -40,7 +40,7 @@ public class SeasonsClient implements ClientModInitializer
 
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> SeasonHandler.reload(client.world));
-        ClientPlayConnectionEvents.DISCONNECT.register(((handler, client) -> ClientConfig.save()));
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ClientConfig.save());
 
         ClientPlayNetworking.registerGlobalReceiver(SeasonTimer.CHANNEL_NAME, (client, handler, buf, responseSender) ->
         {

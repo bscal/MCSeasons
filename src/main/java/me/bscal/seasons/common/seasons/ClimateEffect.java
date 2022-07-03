@@ -3,19 +3,28 @@ package me.bscal.seasons.common.seasons;
 public interface ClimateEffect
 {
 
-    boolean processEffect(SeasonWorld seasonWorld, Season season);
+    boolean canApply(SeasonWorld seasonWorld, Season season);
+
+    void applyEffect(SeasonWorld seasonWorld);
+
+    void removeEffect(SeasonWorld seasonWorld);
+
+    boolean updateEffect(SeasonWorld seasonWorld, int duration, int daysLeftInSeason);
+
+    int getDurationInDays();
 
     ClimateEffectType getType();
 
-    default boolean ofCategory(ClimateEffectCategory category)
+    ClimateEffectCategory getCategory();
+
+    default boolean isOverDuration(int duration)
     {
-        return getType().Category == category;
+        return duration >= getDurationInDays();
     }
 
     default boolean sameTypeOrCategory(SeasonWorld seasonWorld)
     {
-        var type = getType();
-        return seasonWorld.ActiveEffects.contains(type) || seasonWorld.ActiveCategories.contains(type.Category);
+        return seasonWorld.ActiveEffects.containsKey(getType()) || seasonWorld.ActiveCategories.contains(getCategory());
     }
 
 }

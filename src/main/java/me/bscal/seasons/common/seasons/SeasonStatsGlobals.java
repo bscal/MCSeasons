@@ -33,13 +33,13 @@ public class SeasonStatsGlobals
         Seasons.LOGGER.info("Loaded " + updated + " season stat files");
     }
 
-    public static int getSeasonStatsConfig(SeasonStats stats, String name)
+    public static int getSeasonStatsConfig(SeasonStats outStats, String filename)
     {
-        var file = new File(FabricLoader.getInstance().getConfigDir().toFile(), "/seasons/" + name + ".conf");
+        var file = new File(FabricLoader.getInstance().getConfigDir().toFile(), "/seasons/" + filename + ".conf");
         if (!file.exists()) return 0;
         var options = ConfigurationOptions.defaults()
                 .shouldCopyDefaults(true);
-        var config = new Config<>(stats, file, options);
+        var config = new Config<>(outStats, file, options);
         config.load();
         return 1;
     }

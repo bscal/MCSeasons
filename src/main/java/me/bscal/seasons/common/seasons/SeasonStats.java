@@ -2,8 +2,10 @@ package me.bscal.seasons.common.seasons;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+import java.io.Serializable;
+
 @ConfigSerializable
-public class SeasonStats
+public class SeasonStats implements Serializable
 {
 
     public float Temperature;
@@ -36,6 +38,9 @@ public class SeasonStats
 
     public void Combine(SeasonStats stats0, SeasonStats stats1)
     {
+        assert stats0 != null: "stats0 cannot be null";
+        assert stats1 != null: "stats1 cannot be null";
+
         Temperature = stats0.Temperature + stats1.Temperature;
         DayTemperature = stats0.DayTemperature + stats1.DayTemperature;
         NightTemperature = stats0.NightTemperature + stats1.NightTemperature;

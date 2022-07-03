@@ -19,27 +19,4 @@ public enum SeasonTypes
         Name = name;
         SeasonStats = stats;
     }
-
-    public static SeasonTypes forGenericSeason()
-    {
-        switch (Season.getSeason())
-        {
-            case Spring ->
-            {
-                return Spring;
-            }
-            case Summer ->
-            {
-                return Summer;
-            }
-            case Autumn ->
-            {
-                return Autumn;
-            }
-            default ->
-            {
-                return Winter;
-            }
-        }
-    }
 }

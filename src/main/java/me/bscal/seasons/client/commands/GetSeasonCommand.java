@@ -4,7 +4,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.bscal.seasons.api.SeasonAPI;
-import me.bscal.seasons.common.seasons.BiomeToSeasonMapper;
+import me.bscal.seasons.common.seasons.SeasonClimateManager;
+import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -19,10 +20,12 @@ public class GetSeasonCommand implements Command<FabricClientCommandSource>, Cli
 		var sender = context.getSource().getClient().player;
 		var world = context.getSource().getWorld();
 		var biome = (sender == null) ? null : world.getBiome(sender.getBlockPos()).value();
-		var season = SeasonAPI.getSeason();
-		var currentTick = SeasonAPI.getCurrentTick();
-		var date = SeasonAPI.getDate();
-		var seasonType = BiomeToSeasonMapper.getSeasonType(biome);
+
+		var seasonTimer = SeasonTimer.getOrCreate();
+		var season = seasonTimer.getSeason();
+		var currentTick = seasonTimer.getCurrentTicks();
+		var date = seasonTimer.getDate();
+		var seasonType = SeasonClimateManager.getSeasonType(biome);
 		String msg = String.format("Season : %s (%s), TickTime: %d, Date: %s", season, seasonType, currentTick, date);
 		MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(msg));
 		return 0;

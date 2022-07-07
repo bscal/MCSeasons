@@ -1,6 +1,6 @@
 [![](https://jitpack.io/v/bscal/MCSeasons.svg)](https://jitpack.io/#bscal/MCSeasons)
 ### MCSeasons
-Minecraft 1.18-1.18.2 Fabric mod that adds different seasons to the game.
+Minecraft 1.18-1.19 Fabric mod that adds different seasons and seasonal effects to the game.
 <br><br>
 
 ### Gameplay
@@ -29,7 +29,7 @@ There is only 1 global clock based off the Overworld.
 
 Place `Seasons.jar` into your mods folder.
 
-####Commands
+#### Commands
 
     /seasonsc info                  - Prints season and date in chat
     /seasons debug setlevel [0-2]   - Sets debug info (0 - off, 1 - info, 2 - verbose)
@@ -37,8 +37,7 @@ Place `Seasons.jar` into your mods folder.
      
     You can use minecraft's /time command to adjust time
 
-## Developer
-#### Install
+#### Developer
 ```
 repositories {
     maven { url 'https://jitpack.io' }
@@ -49,10 +48,8 @@ dependencies {
 }
 ```
 
-You can use classes `SeasonAPI` and `SeasonAPIUtils` for commonly used functions.
-
-### Notes
-* Seasons are tracked by an internal id.
-* Seasons and SeasonalType are enums containing info on what season it is.
-* Time is tracked server side and synced to clients
-* Time is based off the Overworld only
+#### Useful Classes
+* `SeasonApi` - `SeasonApi.getSeason()` gets the current season and other util functions<br><br>
+* `SeasonTimer` - `SeasonTimer.getOrCreate()`<br><br>
+* `SeasonWorld` - `SeasonWorld.getOrCreate()`<br><br>
+* `SeasonClimateManager` - Register or get `SeasonBiomeClimate` data<br><br>

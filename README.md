@@ -43,7 +43,7 @@ dependencies {
 ```
 
 #### Useful Classes
-* `SeasonApi` - `SeasonApi.getSeason()` gets the current season and other util functions<br><br>
-* `SeasonTimer` - `SeasonTimer.getOrCreate()`<br><br>
-* `SeasonWorld` - `SeasonWorld.getOrCreate()`<br><br>
-* `SeasonClimateManager` - Register or get `SeasonBiomeClimate` data<br><br>
+* `SeasonApi` - Useful util functions<br><br>
+* `SeasonTimer` - Season and time state, can be accessed on both server and client<br><br>
+* `SeasonWorld` - World events state<br><br>
+* `SeasonClimateManager` - Biome climate info<br><br>

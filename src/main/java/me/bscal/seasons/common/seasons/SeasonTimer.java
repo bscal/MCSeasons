@@ -12,7 +12,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.Level;
 
 public class SeasonTimer extends PersistentState
 {
@@ -129,16 +128,15 @@ public class SeasonTimer extends PersistentState
 
     public void setSeason(int seasonTrackerId)
     {
-        if (m_World instanceof ServerWorld serverWorld)
-        {
-            m_InternalSeasonId = MathHelper.clamp(seasonTrackerId, 0, Season.MAX_SEASON_ID);
-            m_DaysInCurrentSeason = 0;
-            m_SeasonChanged = true;
-            SeasonWorld seasonWorld = SeasonWorld.getOrCreate(serverWorld);
-            seasonWorld.updateSeasonalEffects();
-            //SeasonCallbacks.ON_SEASON_CHANGED.invoker().onSeasonChanged(Season.values()[m_InternalSeasonId], seasonWorld);
-            sendToClients(serverWorld);
-        }
+        if (m_World.isClient) return;
+
+        m_InternalSeasonId = MathHelper.clamp(seasonTrackerId, 0, Season.MAX_SEASON_ID);
+        m_DaysInCurrentSeason = 0;
+        m_SeasonChanged = true;
+        SeasonWorld seasonWorld = SeasonWorld.getOrCreate((ServerWorld) m_World);
+        seasonWorld.updateSeasonalEffects();
+        //SeasonCallbacks.ON_SEASON_CHANGED.invoker().onSeasonChanged(Season.values()[m_InternalSeasonId], seasonWorld);
+        sendToClients((ServerWorld) m_World);
     }
 
     // TODO maybe move this out?

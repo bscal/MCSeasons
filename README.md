@@ -1,33 +1,27 @@
 [![](https://jitpack.io/v/bscal/MCSeasons.svg)](https://jitpack.io/#bscal/MCSeasons)
 ### MCSeasons
-Minecraft 1.18-1.19 Fabric mod that adds different seasons and seasonal effects to the game.
-<br><br>
+Minecraft 1.18-1.19 Fabric mod that adds different seasons and seasonal effects to the game. <br>
 
-### Gameplay
-Default there are 4 seasons per year (Spring, Summer, Autumn, Winter).<br>
-However seasons can be customized and each biome can have a different group of seasons.
-For example: (Wet, Wet, Dry, Dry) for a jungle biome.
-
-Time is tracked through in-game time. So `/time set|add` works correctly.
-
-Seasons how their own effects and colors.
-* Spring is brighter
-* Summer is default colors
-* Autumn is browner and leaves are multicolored
-* Winter is a gray washed greed
-
-Leaves fall from leaves, dynamic with seasons and weather
-
-Contains a small API and config files to edit and hook into the mod.
-
-Seasons are tied to minecraft time. Different seasons types per biome.
-
-There is only 1 global clock based off the Overworld.
+### Features
+* There are 4 seasons per year (Spring, Summer, Autumn, Winter).
+* You start on the 0th(?) of Spring, by default each season is 30 Minecraft days.
+* Each season brings different effects, both visually and mechanically.
+* Different biomes can have different season types. For example:
+  * Plains has generic (Spring, Summer, Autumn, Winter)
+  * Jungle might have (Wet, Wet, Dry, Dry)
+  * Desert might have (Spring, Extreme Summer, Autumn, Warm Winter)
+* Time is tracked through in-game time. So `/time set|add` works correctly.
+* Leaves fall from leaf blocks, dynamic with seasons and weather
+* There is only 1 global clock based off the Overworld.
+* `Season Clock` item that can help you keep track of what season it is
 
 ## Usage
 #### Install
 
 Place `Seasons.jar` into your mods folder.
+
+Seasons are somewhat customizable<br>
+There are 2 configs, client-config.conf and server-config.conf
 
 #### Commands
 

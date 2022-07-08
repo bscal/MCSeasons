@@ -18,7 +18,7 @@ public final class SeasonAPI
      */
     public static Season getSeason()
     {
-        return SeasonTimer.getOrCreate().getSeason();
+        return SeasonTimer.get().getSeason();
     }
 
     public static Config.ServerSettings getServerSettings()
@@ -28,7 +28,7 @@ public final class SeasonAPI
 
     public static int getDaysLeftInSeason()
     {
-        return Seasons.ServerConfig.Settings.DaysPerSeason - SeasonTimer.getOrCreate().getDaysInCurrentSeason();
+        return Seasons.ServerConfig.Settings.DaysPerSeason - SeasonTimer.get().getDaysInCurrentSeason();
     }
 
     /**

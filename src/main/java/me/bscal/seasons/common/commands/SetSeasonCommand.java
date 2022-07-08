@@ -20,7 +20,7 @@ public class SetSeasonCommand implements Command<ServerCommandSource>, CommandRe
 	@Override
 	public int run(CommandContext<ServerCommandSource> ctx)
 	{
-		SeasonTimer.getOrCreate().setSeason(ctx.getArgument(SEASON_ARG, int.class));
+		SeasonTimer.get().setSeason(ctx.getArgument(SEASON_ARG, int.class));
 		return 0;
 	}
 

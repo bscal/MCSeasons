@@ -61,7 +61,7 @@ public class Config<T>
 
     public static Config<ServerSettings> initServerConfig()
     {
-        var file = new File(FabricLoader.getInstance().getConfigDir().toFile(), "server-config.conf");
+        var file = new File(FabricLoader.getInstance().getConfigDir().toFile(), "seasons/server-config.conf");
         var options = ConfigurationOptions.defaults()
                 .serializers(builder -> builder.register(Identifier.class, IdentifierSerializer.Instance))
                 .shouldCopyDefaults(true);
@@ -72,7 +72,7 @@ public class Config<T>
 
     public static Config<ClientSettings> initClientConfig()
     {
-        var file = new File(FabricLoader.getInstance().getConfigDir().toFile(), "client-config.conf");
+        var file = new File(FabricLoader.getInstance().getConfigDir().toFile(), "seasons/client-config.conf");
         var options = ConfigurationOptions.defaults()
                 .serializers(builder -> builder.register(Identifier.class, IdentifierSerializer.Instance))
                 .shouldCopyDefaults(true);
@@ -93,7 +93,7 @@ public class Config<T>
         public int MonthsPerYear = 12;
         @Setting("DaysPerSeason")
         @Comment("30 days = 10 irl hours per season")
-        public int DaysPerSeason = 40;
+        public int DaysPerSeason = 30;
     }
 
     @ConfigSerializable

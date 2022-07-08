@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "seasons:item/season_clock/season_clock"
+  },
+  "overrides": [
+    { "predicate": { "time": 0.000 }, "model": "seasons:item/season_clock" },
+    { "predicate": { "time": 0.125 }, "model": "seasons:item/season_clock_1" },
+    { "predicate": { "time": 0.250 }, "model": "seasons:item/season_clock_2" },
+    { "predicate": { "time": 0.375 }, "model": "seasons:item/season_clock_3" },
+    { "predicate": { "time": 0.500 }, "model": "seasons:item/season_clock_4" },
+    { "predicate": { "time": 0.625 }, "model": "seasons:item/season_clock_5" },
+    { "predicate": { "time": 0.750 }, "model": "seasons:item/season_clock_6" },
+    { "predicate": { "time": 0.875 }, "model": "seasons:item/season_clock_7" },
+    { "predicate": { "time": 1.000 }, "model": "seasons:item/season_clock" }
+  ]
+}

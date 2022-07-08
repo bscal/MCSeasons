@@ -52,7 +52,7 @@ public class SeasonsClient implements ClientModInitializer
             final boolean seasonChanged = buf.readBoolean();
             client.execute(() ->
             {
-                SeasonTimer.getOrCreate().readFromServer(totalTicks, currentTicks, days, daysInCurrentSeasons, seasonalSectionTracker);
+                SeasonTimer.get().readFromServer(totalTicks, currentTicks, days, daysInCurrentSeasons, seasonalSectionTracker);
                 if (seasonChanged)
                 {
                     MinecraftClient.getInstance().worldRenderer.reload();

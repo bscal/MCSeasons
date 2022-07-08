@@ -56,18 +56,18 @@ public class BiomeChanger
     {
         if (GrassColors == null)
             return ERROR_PINK; // Safety check because these arrays should never be null
-        if (SeasonTimer.getOrCreate().getInternalSeasonId() >= GrassColors.length)
+        if (SeasonTimer.get().getInternalSeasonId() >= GrassColors.length)
             return DefaultColor; // If the array doesnt contain the season id use the default color
-        return GrassColors[SeasonTimer.getOrCreate().getInternalSeasonId()];
+        return GrassColors[SeasonTimer.get().getInternalSeasonId()];
     }
 
     public int getFoliageColor()
     {
         if (FoliageColor == null)
             return ERROR_PINK; // Safety check because these arrays should never be null
-        if (SeasonTimer.getOrCreate().getInternalSeasonId() >= FoliageColor.length)
+        if (SeasonTimer.get().getInternalSeasonId() >= FoliageColor.length)
             return DefaultColor; // If the array doesnt contain the season id use the default color
-        return FoliageColor[SeasonTimer.getOrCreate().getInternalSeasonId()];
+        return FoliageColor[SeasonTimer.get().getInternalSeasonId()];
     }
 
     public int getFallLeavesColor(int x, int y)

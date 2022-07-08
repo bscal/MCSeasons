@@ -23,7 +23,7 @@ public class GetSeasonCommand implements Command<FabricClientCommandSource>, Cli
         var world = context.getSource().getWorld();
         var biome = (sender == null) ? null : world.getBiome(sender.getBlockPos()).value();
 
-        var seasonTimer = SeasonTimer.getOrCreate();
+        var seasonTimer = SeasonTimer.get();
         var season = seasonTimer.getSeason();
         var currentTick = seasonTimer.getCurrentTicks();
         var date = seasonTimer.getDate();

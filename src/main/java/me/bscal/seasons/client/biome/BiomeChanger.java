@@ -15,7 +15,7 @@ import net.minecraft.world.biome.Biome;
 @Environment(EnvType.CLIENT)
 public class BiomeChanger
 {
-    public static final Color WINTER_DEAD_BLUE = Color.fromHex("#665538");
+    public static final Color WINTER_DEAD_BLUE = Color.fromHex("#827866");
     public static final Color AUTUMN_DEEP_YELLOW = Color.fromHex("#ffcc00");
     public static final Color DEEP_BROWN = Color.fromHex("#976b1d");
     public static final Color DEEP_RED = Color.fromHex("#bd4615");
@@ -113,7 +113,7 @@ public class BiomeChanger
         fall.blend(AUTUMN_DEEP_YELLOW, .25f);
 
         Color winter = new Color(changer.DefaultColor);
-        winter.blend(WINTER_DEAD_BLUE, .6f);
+        winter.blend(WINTER_DEAD_BLUE, .65f);
 
         changer.setGrassColors(spring.toInt(), changer.DefaultColor, fall.toInt(), winter.toInt());
         changer.setFoliageColor(spring.toInt(), changer.DefaultColor, fall.toInt(), winter.toInt());

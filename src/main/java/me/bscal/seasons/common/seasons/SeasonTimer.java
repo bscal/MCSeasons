@@ -144,8 +144,9 @@ public class SeasonTimer extends PersistentState
         m_InternalSeason = season;
         m_DaysInCurrentSeason = daysToRemainInNewSeason;
         m_SeasonChanged = true;
-        SeasonWorld seasonWorld = SeasonWorld.getOrCreate((ServerWorld) m_World);
-        seasonWorld.updateSeasonalEffects();
+        // TODO disabled until work
+        //SeasonWorld seasonWorld = SeasonWorld.getOrCreate((ServerWorld) m_World);
+        //seasonWorld.updateSeasonalEffects();
         //SeasonCallbacks.ON_SEASON_CHANGED.invoker().onSeasonChanged(Season.values()[m_InternalSeasonId], seasonWorld);
         sendToClients((ServerWorld) m_World);
     }
@@ -189,7 +190,7 @@ public class SeasonTimer extends PersistentState
         m_DaysInCurrentSeason += days;
         int daysLeftInSeason = m_DaysPerSeason - m_DaysInCurrentSeason;
 
-        SeasonWorld.getOrCreate((ServerWorld) m_World).updateDailyEffects(daysLeftInSeason);
+        //SeasonWorld.getOrCreate((ServerWorld) m_World).updateDailyEffects(daysLeftInSeason);
         //SeasonCallbacks.ON_NEW_DAY.invoker().onDayChanged(days, m_Day);
         if (daysLeftInSeason <= 0)
         {

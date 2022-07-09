@@ -3,14 +3,13 @@ package me.bscal.seasons;
 import me.bscal.seasons.common.Config;
 import me.bscal.seasons.common.commands.DebugCommand;
 import me.bscal.seasons.common.commands.SetSeasonCommand;
-import me.bscal.seasons.common.seasons.SeasonClimateManager;
-import me.bscal.seasons.common.seasons.SeasonClockItem;
-import me.bscal.seasons.common.seasons.SeasonStatsGlobals;
-import me.bscal.seasons.common.seasons.SeasonTimer;
+import me.bscal.seasons.common.seasons.*;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -40,11 +39,13 @@ public class Seasons implements ModInitializer
         ServerLifecycleEvents.SERVER_STARTED.register(server ->
         {
             m_Server = server;
-            new SeasonTimer(m_Server.getOverworld());
-            SeasonClimateManager.init(m_Server);
             ServerConfig.load();
+            new SeasonTimer(m_Server.getOverworld(), ServerConfig.Settings);
+            SeasonClimateManager.init(m_Server);
+
         });
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> ServerConfig.save());
+
     }
 
     public MinecraftServer getServer()

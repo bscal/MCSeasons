@@ -4,14 +4,14 @@
     "layer0": "seasons:item/season_clock/season_clock"
   },
   "overrides": [
-    { "predicate": { "time": 0.000 }, "model": "seasons:item/season_clock" },
-    { "predicate": { "time": 0.125 }, "model": "seasons:item/season_clock_1" },
-    { "predicate": { "time": 0.250 }, "model": "seasons:item/season_clock_2" },
-    { "predicate": { "time": 0.375 }, "model": "seasons:item/season_clock_3" },
-    { "predicate": { "time": 0.500 }, "model": "seasons:item/season_clock_4" },
-    { "predicate": { "time": 0.625 }, "model": "seasons:item/season_clock_5" },
-    { "predicate": { "time": 0.750 }, "model": "seasons:item/season_clock_6" },
-    { "predicate": { "time": 0.875 }, "model": "seasons:item/season_clock_7" },
-    { "predicate": { "time": 1.000 }, "model": "seasons:item/season_clock" }
+    { "predicate": { "seasons:time": 0.000 }, "model": "seasons:item/season_clock" },
+    { "predicate": { "seasons:time": 0.083 }, "model": "seasons:item/season_clock_1" },
+    { "predicate": { "seasons:time": 0.166 }, "model": "seasons:item/season_clock_2" },
+    { "predicate": { "seasons:time": 0.332 }, "model": "seasons:item/season_clock_3" },
+    { "predicate": { "seasons:time": 0.415 }, "model": "seasons:item/season_clock_4" },
+    { "predicate": { "seasons:time": 0.581 }, "model": "seasons:item/season_clock_5" },
+    { "predicate": { "seasons:time": 0.664 }, "model": "seasons:item/season_clock_6" },
+    { "predicate": { "seasons:time": 0.830 }, "model": "seasons:item/season_clock_7" },
+    { "predicate": { "seasons:time": 0.913 }, "model": "seasons:item/season_clock" }
   ]
 }

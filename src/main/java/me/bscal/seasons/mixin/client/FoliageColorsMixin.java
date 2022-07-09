@@ -6,6 +6,8 @@ import me.bscal.seasons.client.biome.BiomeChanger;
 import me.bscal.seasons.common.seasons.Season;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import me.bscal.seasons.common.utils.Color;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.color.world.FoliageColors;
 import net.minecraft.world.biome.BiomeKeys;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +15,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(FoliageColors.class) public class FoliageColorsMixin
+@Environment(EnvType.CLIENT)
+@Mixin(FoliageColors.class)
+public class FoliageColorsMixin
 {
 
 	private static final int FALL_BIRCH_COLOR = Color.fromHex("#e2b914").toInt();

@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.registry.Registry;
 
@@ -27,7 +28,6 @@ public class SeasonsClient implements ClientModInitializer
     public void onInitializeClient()
     {
         ClientConfig = Config.initClientConfig();
-
         SeasonHandler = new BiomeSeasonHandler();
 
         Registry.register(Registry.PARTICLE_TYPE, Seasons.MOD_ID + ":falling_leaves", FallingLeavesParticle.FALLING_LEAVES);
@@ -39,7 +39,13 @@ public class SeasonsClient implements ClientModInitializer
         });
 
 
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> SeasonHandler.reload(client.world));
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            SeasonHandler.reload(client.world);
+            if (!client.isIntegratedServerRunning())
+            {
+                new SeasonTimer(client.world);
+            }
+        });
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ClientConfig.save());
 
         ClientPlayNetworking.registerGlobalReceiver(SeasonTimer.CHANNEL_NAME, (client, handler, buf, responseSender) ->

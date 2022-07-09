@@ -84,26 +84,33 @@ public class Config<T>
     @ConfigSerializable
     public static class ServerSettings
     {
-        @Setting("TicksPerDay")
-        public int TicksPerDay = 24000;
         @Setting("DaysPerMonth")
-        @Comment("Minecraft day is 20 minutes. Default is 7 (2.3 irl hours)")
+        @Comment("Minecraft day is 20 minutes. Default is 10 (3.3 irl hours)")
         public int DaysPerMonth = 10;
         @Setting("MonthsPerYear")
+        @Comment("Default: 12")
         public int MonthsPerYear = 12;
-        @Setting("DaysPerSeason")
-        @Comment("30 days = 10 irl hours per season")
-        public int DaysPerSeason = 30;
+        @Setting("MonthsPerSeason")
+        @Comment("Default: 3")
+        public int MonthsPerSeason = 3;
+        @Setting("TicksPerDay")
+        @Comment("You should not change this value unless you know what your doing. Minecraft's day is 24000 ticks")
+        public int TicksPerDay = 24000;
     }
 
     @ConfigSerializable
     public static class ClientSettings
     {
         @Setting("GraphicsLevel")
+        @Comment("Fancy - Fancy fall leaves, Fast - Basic fall leaves, Disabled - No fall leaves")
         public SeasonsGraphicsLevel GraphicsLevel = SeasonsGraphicsLevel.Fancy;
+        @Setting("EnableSeasonalColors")
+        public boolean EnableSeasonalColors = true;
         @Setting("EnableFallsColors")
+        @Comment("Enables random fall leave colors")
         public boolean EnableFallColors = true;
         @Setting("LeafFallDistance")
+        @Comment("0 - Disables")
         public int LeafFallDistance = 32;
     }
 

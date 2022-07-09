@@ -4,6 +4,8 @@ import me.bscal.seasons.api.SeasonAPI;
 import me.bscal.seasons.client.SeasonsClient;
 import me.bscal.seasons.client.particles.FallingLeavesParticle;
 import me.bscal.seasons.common.seasons.Season;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.client.MinecraftClient;
@@ -16,7 +18,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LeavesBlock.class) public class LeavesBlockMixin
+@Environment(EnvType.CLIENT)
+@Mixin(LeavesBlock.class)
+public class LeavesBlockMixin
 {
 
 	@Inject(method = "randomDisplayTick", at = @At(value = "HEAD"))

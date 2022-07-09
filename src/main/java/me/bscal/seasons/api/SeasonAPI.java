@@ -26,11 +26,6 @@ public final class SeasonAPI
         return Seasons.ServerConfig.Settings;
     }
 
-    public static int getDaysLeftInSeason()
-    {
-        return Seasons.ServerConfig.Settings.DaysPerSeason - SeasonTimer.get().getDaysInCurrentSeason();
-    }
-
     /**
      * Works exactly like /time add [time].
      */

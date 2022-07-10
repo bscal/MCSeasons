@@ -8,7 +8,9 @@ public enum ClimateEffectType
 
     Mild(Temperature, new TemperatureEffects()),
     Cool(Temperature, new TemperatureEffects()),
-    Dry(Rain, new TemperatureEffects()),
+    HeatWave(Temperature, new TemperatureEffects()),
+    IceAge(Temperature, new TemperatureEffects()),
+    Drought(Rain, new TemperatureEffects()),
     Rainy(Rain, new TemperatureEffects());
 
     public final ClimateEffectCategory Category;

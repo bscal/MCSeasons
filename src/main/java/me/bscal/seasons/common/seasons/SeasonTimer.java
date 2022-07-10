@@ -14,8 +14,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
-import java.util.Objects;
-
 public class SeasonTimer extends PersistentState
 {
 
@@ -70,7 +68,7 @@ public class SeasonTimer extends PersistentState
     {
         if (!m_World.isClient)
         {
-            Objects.requireNonNull(settings);
+            assert settings != null : "Settings cannot be null";
             m_DaysPerSeason = settings.MonthsPerSeason * settings.DaysPerMonth;
             m_DaysPerYear = settings.DaysPerMonth * settings.MonthsPerYear;
         }
@@ -188,16 +186,20 @@ public class SeasonTimer extends PersistentState
 
         m_Day += days;
         m_DaysInCurrentSeason += days;
-        int daysLeftInSeason = m_DaysPerSeason - m_DaysInCurrentSeason;
 
         //SeasonWorld.getOrCreate((ServerWorld) m_World).updateDailyEffects(daysLeftInSeason);
         //SeasonCallbacks.ON_NEW_DAY.invoker().onDayChanged(days, m_Day);
-        if (daysLeftInSeason <= 0)
+
+        int newSeasonId = m_InternalSeason.ordinal();
+        boolean newSeason = false;
+        while (m_DaysInCurrentSeason > m_DaysPerSeason)
         {
-            int newSeasonId = m_InternalSeason.ordinal() + 1;
+            m_DaysInCurrentSeason -= m_DaysPerSeason;
+            newSeason = true;
+            ++newSeasonId;
             if (newSeasonId > Season.MAX_SEASON_ID) newSeasonId = 0;
-            setSeason(Season.values()[newSeasonId], Math.abs(daysLeftInSeason));
         }
+        if (newSeason) setSeason(Season.values()[newSeasonId], m_DaysInCurrentSeason);
     }
 
     // TODO maybe move this out?
@@ -206,12 +208,12 @@ public class SeasonTimer extends PersistentState
         if (world.isClient) return;
 
         m_CachedBuffer.clear();
-        m_CachedBuffer.writeLong(m_TotalTicks);             // 8
-        m_CachedBuffer.writeLong(m_CurrentTicks);           // 16
-        m_CachedBuffer.writeInt(m_Day);                     // 20
-        m_CachedBuffer.writeShort(m_DaysInCurrentSeason);   // 22
-        m_CachedBuffer.writeByte(m_InternalSeason.ordinal());       // 23
-        m_CachedBuffer.writeBoolean(m_SeasonChanged);       // 24
+        m_CachedBuffer.writeLong(m_TotalTicks);                 // 8
+        m_CachedBuffer.writeLong(m_CurrentTicks);               // 16
+        m_CachedBuffer.writeInt(m_Day);                         // 20
+        m_CachedBuffer.writeShort(m_DaysInCurrentSeason);       // 22
+        m_CachedBuffer.writeByte(m_InternalSeason.ordinal());   // 23
+        m_CachedBuffer.writeBoolean(m_SeasonChanged);           // 24
 
         for (ServerPlayerEntity player : PlayerLookup.all(Seasons.Instance.getServer()))
             ServerPlayNetworking.send(player, CHANNEL_NAME, m_CachedBuffer);
@@ -221,15 +223,13 @@ public class SeasonTimer extends PersistentState
     }
 
     // TODO this should probably be handled better ._.
-    public void readFromServer(long totalTicks, long currentTicks, int day, int daysInCurrentSeason, int internalSeasonId)
+    public void readFromServer(long totalTicks, long currentTicks, int day, int daysInCurrentSeason, Season internalSeason)
     {
-        if (!m_World.isClient) return;
-
         m_TotalTicks = totalTicks;
         m_CurrentTicks = currentTicks;
         m_Day = day;
         m_DaysInCurrentSeason = daysInCurrentSeason;
-        m_InternalSeason = Season.values()[internalSeasonId];
+        m_InternalSeason = internalSeason;
     }
 
     @Override

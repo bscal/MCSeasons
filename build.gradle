@@ -64,7 +64,7 @@ allprojects {
         }
 
         // set true to enable errorprone
-        options.errorprone.enabled = true
+        options.errorprone.enabled = false
         options.errorprone.excludedPaths = ".*/FastNoiseLite.*"
     }
 

@@ -1,12 +1,5 @@
 package me.bscal.seasons.common.seasons;
 
-import me.bscal.seasons.Seasons;
-import me.bscal.seasons.common.Config;
-import net.fabricmc.loader.api.FabricLoader;
-import org.spongepowered.configurate.ConfigurationOptions;
-
-import java.io.File;
-
 public class SeasonStatsGlobals
 {
 
@@ -19,7 +12,21 @@ public class SeasonStatsGlobals
     public static final SeasonStats EXTREME_SUMMER = new SeasonStats();
     public static final SeasonStats EXTREME_WINTER = new SeasonStats();
 
-    public static void tryLoadFromConfig()
+    static
+    {
+        SPRING.Temperature = 15.0f;
+        SUMMER.Temperature = 26.0f;
+        AUTUMN.Temperature = 15.0f;
+        WINTER.Temperature = 1.0f;
+
+        WET.Temperature = 27.0f;
+        DRY.Temperature = 27.0f;
+
+        EXTREME_SUMMER.Temperature = 34.0f;
+        EXTREME_WINTER.Temperature = -3.0f;
+    }
+
+/*    public static void tryLoadFromConfig()
     {
         int updated = 0;
         updated += getSeasonStatsConfig(SPRING, SeasonTypes.Spring.Name);
@@ -42,6 +49,6 @@ public class SeasonStatsGlobals
         var config = new Config<>(outStats, file, options);
         config.load();
         return 1;
-    }
+    }*/
 
 }

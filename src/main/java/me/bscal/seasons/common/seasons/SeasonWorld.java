@@ -35,6 +35,7 @@ public class SeasonWorld extends PersistentState
     {
     }
 
+    // TODO probably remove this
     public void updateSeasonalEffects()
     {
         var season = SeasonAPI.getSeason();

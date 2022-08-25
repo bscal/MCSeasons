@@ -30,7 +30,7 @@ public class BiomeChanger
     {
         assert grassColors.length == 4 : "grassColors length must be 4";
         assert foliageColors.length == 4 : "grassColors length must be 4";
-        assert fallLeavesColors.length <= 0 : "grassColors length cannot be < 1";
+        assert fallLeavesColors.length > 0 : "grassColors must be greater than 0";
         DefaultColor = defaultColor;
         GrassColors = grassColors;
         FoliageColor = foliageColors;

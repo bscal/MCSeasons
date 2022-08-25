@@ -15,15 +15,23 @@ public class SeasonStatsGlobals
     static
     {
         SPRING.Temperature = 15.0f;
+        SPRING.TemperatureType = SeasonStats.TemperateType.NORMAL;
         SUMMER.Temperature = 26.0f;
+        SUMMER.TemperatureType = SeasonStats.TemperateType.HOT;
         AUTUMN.Temperature = 15.0f;
+        AUTUMN.TemperatureType = SeasonStats.TemperateType.NORMAL;
         WINTER.Temperature = 1.0f;
+        WINTER.TemperatureType = SeasonStats.TemperateType.COLD;
 
         WET.Temperature = 27.0f;
+        WET.TemperatureType = SeasonStats.TemperateType.HOT;
         DRY.Temperature = 27.0f;
+        DRY.TemperatureType = SeasonStats.TemperateType.HOT;
 
         EXTREME_SUMMER.Temperature = 34.0f;
+        EXTREME_SUMMER.TemperatureType = SeasonStats.TemperateType.VERY_HOT;
         EXTREME_WINTER.Temperature = -3.0f;
+        EXTREME_WINTER.TemperatureType = SeasonStats.TemperateType.VERY_COLD;
     }
 
 /*    public static void tryLoadFromConfig()

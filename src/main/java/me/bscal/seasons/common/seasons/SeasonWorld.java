@@ -35,16 +35,6 @@ public class SeasonWorld extends PersistentState
     {
     }
 
-    // TODO probably remove this
-    public void updateSeasonalEffects()
-    {
-        var season = SeasonAPI.getSeason();
-        for (var biomeClimate : SeasonClimateManager.BIOME_TO_CLIMATE.values())
-        {
-            biomeClimate.updateSeason(season);
-        }
-    }
-
     // TODO
     public void updateDailyEffects(int daysLeftInSeason)
     {
@@ -100,7 +90,6 @@ public class SeasonWorld extends PersistentState
 
     public void resetEffects()
     {
-        WorldStats.zero();
         ActiveEffects.clear();
         ActiveCategories.clear();
     }

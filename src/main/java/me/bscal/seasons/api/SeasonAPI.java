@@ -18,12 +18,7 @@ public final class SeasonAPI
      */
     public static Season getSeason()
     {
-        return SeasonTimer.get().getSeason();
-    }
-
-    public static Config.ServerSettings getServerSettings()
-    {
-        return Seasons.ServerConfig.Settings;
+        return SeasonTimer.get().CurrentSeason;
     }
 
     /**

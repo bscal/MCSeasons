@@ -16,7 +16,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 @Environment(EnvType.CLIENT)
 public class SeasonsClient implements ClientModInitializer
@@ -33,7 +34,7 @@ public class SeasonsClient implements ClientModInitializer
         ClientConfig = Config.initClientConfig();
         SeasonHandler = new BiomeSeasonHandler();
 
-        Registry.register(Registry.PARTICLE_TYPE, Seasons.MOD_ID + ":falling_leaves", FallingLeavesParticle.FALLING_LEAVES);
+        Registry.register(Registries.PARTICLE_TYPE, Seasons.MOD_ID + ":falling_leaves", FallingLeavesParticle.FALLING_LEAVES);
         ParticleFactoryRegistry.getInstance().register(FallingLeavesParticle.FALLING_LEAVES, FallingLeavesParticle.Factory::new);
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->

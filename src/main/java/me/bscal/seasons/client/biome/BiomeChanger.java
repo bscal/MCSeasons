@@ -39,17 +39,17 @@ public class BiomeChanger
 
     public int getGrassColor()
     {
-        return GrassColors[SeasonTimer.get().getInternalSeasonId()];
+        return GrassColors[SeasonTimer.get().CurrentSeason.ordinal()];
     }
 
     public int getFoliageColor()
     {
-        return FoliageColor[SeasonTimer.get().getInternalSeasonId()];
+        return FoliageColor[SeasonTimer.get().CurrentSeason.ordinal()];
     }
 
     public int getFallLeavesColor(int x, int y)
     {
-        if (SeasonsClient.ClientConfig.Settings.EnableFallColors && SeasonTimer.get().getSeason() == Season.Autumn)
+        if (SeasonsClient.ClientConfig.Settings.EnableFallColors && SeasonTimer.get().CurrentSeason == Season.Autumn)
             return getRandomFallColor(x, y);
         return getFoliageColor();
     }

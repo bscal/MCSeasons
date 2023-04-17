@@ -5,9 +5,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 @Environment(EnvType.CLIENT) public class BiomeSeasonHandler
@@ -33,7 +33,7 @@ import net.minecraft.world.biome.Biome;
 	{
 		//MinecraftClient.getInstance().player.networkHandler.getRegistryManager()
 		world.getRegistryManager()
-				.get(Registry.BIOME_KEY)
+				.get(RegistryKeys.BIOME)
 				.streamEntries()
 				.forEach((pair) -> register(pair.registryKey(), BiomeChanger.createDefaultChanger(pair.value())));
 	}
@@ -42,7 +42,7 @@ import net.minecraft.world.biome.Biome;
 	{
 		if (MinecraftClient.getInstance().world == null)
 			return null;
-		var id = MinecraftClient.getInstance().world.getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+		var id = MinecraftClient.getInstance().world.getRegistryManager().get(RegistryKeys.BIOME).getId(biome);
 		return ChangerMap.get(id);
 	}
 
@@ -60,6 +60,6 @@ import net.minecraft.world.biome.Biome;
 	{
 		if (MinecraftClient.getInstance().world == null)
 			return;
-		register(MinecraftClient.getInstance().world.getRegistryManager().get(Registry.BIOME_KEY).getId(biome), changer);
+		register(MinecraftClient.getInstance().world.getRegistryManager().get(RegistryKeys.BIOME).getId(biome), changer);
 	}
 }

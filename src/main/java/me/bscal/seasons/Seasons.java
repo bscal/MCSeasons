@@ -5,11 +5,12 @@ import me.bscal.seasons.common.commands.DebugCommand;
 import me.bscal.seasons.common.commands.SetSeasonCommand;
 import me.bscal.seasons.common.seasons.SeasonClimateManager;
 import me.bscal.seasons.common.seasons.SeasonClockItem;
-import me.bscal.seasons.common.seasons.SeasonStatsGlobals;
 import me.bscal.seasons.common.seasons.SeasonTimer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.random.Random;
 import org.apache.logging.log4j.LogManager;
@@ -51,11 +52,22 @@ public class Seasons implements ModInitializer
             m_Server = null;
         });
 
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> {
+            entries.add(SeasonClockItem.SEASON_CLOCK);
+        });
+
     }
 
     public MinecraftServer getServer()
     {
         assert m_Server != null : "m_Server must not be null. Are you calling getServer() from client?";
         return m_Server;
+    }
+
+    public static int GetDaysPerSeason()
+    {
+        int daysPerMonth = Seasons.ServerConfig.Settings.DaysPerMonth;
+        int monthsPerSeason = Seasons.ServerConfig.Settings.MonthsPerSeason;
+        return daysPerMonth * monthsPerSeason;
     }
 }
